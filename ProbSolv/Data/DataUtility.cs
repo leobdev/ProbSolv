@@ -14,9 +14,11 @@ namespace ProbSolv.Data
         private static int company3Id;
         private static int company4Id;
         private static int company5Id;
+            
 
         public static string GetConnectionString(IConfiguration configuration)
         {
+
 
             //The default connection string will come from appSettings like usual
             var connectionStringBuilder = new NpgsqlConnectionStringBuilder(
