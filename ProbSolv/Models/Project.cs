@@ -44,6 +44,7 @@ namespace ProbSolv.Models
         [DisplayName("File Extension")]
         public string ImageContentType { get; set; }
 
+        [DisplayName("Archived")]
         public bool Archived { get; set; }
 
 
