@@ -2,7 +2,7 @@
 
 namespace ProbSolv.Models.ViewModels
 {
-    public class AddprojectWithPMViewModel
+    public class AddProjectWithPMViewModel
     {
         public Project Project { get; set; }    
 
