@@ -1,4 +1,5 @@
 ﻿@model ProbSolv.Models.ViewModels.AddProjectWithPMViewModel
+@using ProbSolv.Models.Enums
 
 
 @{
@@ -57,12 +58,15 @@
 
             }
             @*Fix up PM SelectList*@
-            <div class="form-group">
-                <label  class="control-label">Project Manager</label>
-                <select asp-for="PMId" class="form-control" required asp-items="@Model.PMList">
-                    <option></option>
-                </select>
-            </div>
+            @if (User.IsInRole(Roles.Admin.ToString()))
+            {
+                <div class="form-group">
+                    <label class="control-label">Project Manager</label>
+                    <select asp-for="PMId" class="form-control" required asp-items="@Model.PMList">
+                        <option></option>
+                    </select>
+                </div>
+            }
 
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
