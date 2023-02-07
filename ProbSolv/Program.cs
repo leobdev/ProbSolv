@@ -45,7 +45,6 @@ builder.Services.AddScoped<IPSNotificationService, PSNotificationService>();
 builder.Services.AddScoped<IPSInviteService, PSInviteService>();
 builder.Services.AddScoped<IPSFileService, PSFileService>();
 builder.Services.AddScoped<IPSLookupService, PSLookupService>();
-
 builder.Services.AddScoped<IEmailSender, PSEmailService>();
 builder.Services.Configure<MailSettings>(mailSettings);
 
