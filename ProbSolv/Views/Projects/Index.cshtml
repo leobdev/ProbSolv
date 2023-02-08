@@ -25,53 +25,63 @@
                 @Html.DisplayNameFor(model => model.EndDate)
             </th>@*
             <th>
-                @Html.DisplayNameFor(model => model.ImageFileName)
+            @Html.DisplayNameFor(model => model.ImageFileName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ImageFileData)
+            @Html.DisplayNameFor(model => model.ImageFileData)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ImageContentType)
+            @Html.DisplayNameFor(model => model.ImageContentType)
             </th>*@
             <th>
                 @Html.DisplayNameFor(model => model.ProjectPriority)
             </th>
-           <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndDate)
+                </td>
+                @*            <td>
+            @Html.DisplayFor(modelItem => item.ImageFileName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Description)
+            @Html.DisplayFor(modelItem => item.ImageFileData)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.StartDate)
+            @Html.DisplayFor(modelItem => item.ImageContentType)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndDate)
-            </td>
-@*            <td>
-                @Html.DisplayFor(modelItem => item.ImageFileName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImageFileData)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImageContentType)
-            </td>
-*@            <td>
-                @Html.DisplayFor(modelItem => item.ProjectPriority.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Archive" asp-route-id="@item.Id">Archive</a>
-            </td>
-        </tr>
-}
+            *@
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProjectPriority.Id)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+
+                    @if (item.Archived)
+                    {
+                        <a asp-action="Restore" asp-route-id="@item.Id">Restore</a>
+                    }
+                    else
+                    {
+                        <a asp-action="Archive" asp-route-id="@item.Id">Archive</a>
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
