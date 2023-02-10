@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -21,14 +22,17 @@ namespace ProbSolv.Controllers
         private readonly IPSLookupService _lookupService;
         private readonly IPSFileService _fileService;
         private readonly IPSProjectService _projectService;
+        private readonly UserManager<PSUser> _userManager;
+      
 
-        public ProjectsController(ApplicationDbContext context, IPSRolesService rolesService, IPSLookupService lookupService, IPSFileService fileService, IPSProjectService projectService)
+        public ProjectsController(ApplicationDbContext context, IPSRolesService rolesService, IPSLookupService lookupService, IPSFileService fileService, IPSProjectService projectService, UserManager<PSUser> userManager)
         {
             _context = context;
             _rolesService = rolesService;
             _lookupService = lookupService;
             _fileService = fileService;
             _projectService = projectService;
+            _userManager = userManager;
         }
 
         // GET: Projects
@@ -40,6 +44,21 @@ namespace ProbSolv.Controllers
 
             return View(projects);
         }
+
+
+        public async Task<IActionResult> MyProjects()
+        {
+            
+            string userId = _userManager.GetUserId(User);           
+
+            List<Project> projects = await _projectService.GetUserProjectsAsync(userId);
+
+            return View(projects);
+        }
+
+
+
+
 
         // GET: Projects/Details/5
         public async Task<IActionResult> Details(int? id)
