@@ -83,6 +83,15 @@ namespace ProbSolv.Controllers
         }
 
 
+        public async Task<IActionResult> ArchivedProjects()
+        {
+
+            int companyId = User.Identity.GetCompanyId().Value;
+
+           List<Project> projects = await _projectService.GetArchivedProjectsByCompanyAsync(companyId);
+
+            return View(projects);
+        }
 
 
 
@@ -158,7 +167,7 @@ namespace ProbSolv.Controllers
                 }
 
                 //TODO: Redirect to AllProjects
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(AllProjects));
 
 
 
@@ -214,7 +223,7 @@ namespace ProbSolv.Controllers
                     }
 
                     //TODO: Redirect to AllProjects
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(AllProjects));
                 }
                 catch (Exception)
                 {
@@ -264,7 +273,7 @@ namespace ProbSolv.Controllers
 
             await _projectService.ArchiveProjectAsync(project);
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(AllProjects));
         }
 
 
@@ -299,7 +308,7 @@ namespace ProbSolv.Controllers
 
             await _projectService.RestoreProjectAsync(project);
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(AllProjects));
         }
 
 
