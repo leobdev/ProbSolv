@@ -23,9 +23,10 @@ namespace ProbSolv.Controllers
         private readonly IPSFileService _fileService;
         private readonly IPSProjectService _projectService;
         private readonly UserManager<PSUser> _userManager;
-      
+        private readonly IPSCompanyInfoService _companyInfoService;
 
-        public ProjectsController(ApplicationDbContext context, IPSRolesService rolesService, IPSLookupService lookupService, IPSFileService fileService, IPSProjectService projectService, UserManager<PSUser> userManager)
+
+        public ProjectsController(ApplicationDbContext context, IPSRolesService rolesService, IPSLookupService lookupService, IPSFileService fileService, IPSProjectService projectService, UserManager<PSUser> userManager, IPSCompanyInfoService companyInfoService)
         {
             _context = context;
             _rolesService = rolesService;
@@ -33,6 +34,7 @@ namespace ProbSolv.Controllers
             _fileService = fileService;
             _projectService = projectService;
             _userManager = userManager;
+            _companyInfoService = companyInfoService;
         }
 
         // GET: Projects
@@ -52,6 +54,30 @@ namespace ProbSolv.Controllers
             string userId = _userManager.GetUserId(User);           
 
             List<Project> projects = await _projectService.GetUserProjectsAsync(userId);
+
+            return View(projects);
+        }
+
+
+        public async Task<IActionResult> AllProjects()
+        {
+
+            int companyId = User.Identity.GetCompanyId().Value;
+
+            string userId = _userManager.GetUserId(User);
+
+            List<Project> projects = new();
+
+            if(User.IsInRole(nameof(Roles.Admin)) || User.IsInRole(nameof(Roles.ProjectManager)))
+            {
+                
+                projects = await _companyInfoService.GetAllProjectsAsync(companyId);
+            }
+            else
+            {
+                projects = await _projectService.GetAllProjectsByCompanyAsync(companyId);
+
+            }
 
             return View(projects);
         }
