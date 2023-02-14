@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
@@ -20,13 +21,15 @@ namespace ProbSolv.Controllers
         private readonly UserManager<PSUser> _userManager;
         private readonly IPSLookupService _lookupService;
         private readonly IPSProjectService _projectService;
+        private readonly IPSTicketService _ticketService;
 
-        public TicketsController(ApplicationDbContext context, UserManager<PSUser> userManager, IPSLookupService lookupService, IPSProjectService projectService)
+        public TicketsController(ApplicationDbContext context, UserManager<PSUser> userManager, IPSLookupService lookupService, IPSProjectService projectService, IPSTicketService ticketService)
         {
             _context = context;
             _userManager = userManager;
             _lookupService = lookupService;
             _projectService = projectService;
+            _ticketService = ticketService;
         }
 
         // GET: Tickets
@@ -89,20 +92,40 @@ namespace ProbSolv.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,Created,Updated,Archived,ArchivedByProject,ProjectId,TicketTypeId,TicketPriorityId,TicketStatusId,OwnerUserId,DeveloperUserId")] Ticket ticket)
+        public async Task<IActionResult> Create([Bind("Id,Title,Description,ProjectId,TicketTypeId,TicketPriorityId")] Ticket ticket)
         {
+            PSUser psUser = await _userManager.GetUserAsync(User);
+            int companyId = User.Identity.GetCompanyId().Value;
+
             if (ModelState.IsValid)
             {
-                _context.Add(ticket);
-                await _context.SaveChangesAsync();
+                
+
+                ticket.Created = DateTimeOffset.Now;
+                ticket.OwnerUserId = psUser.Id;
+                ticket.TicketStatusId = (await _ticketService.LookupTicketStatusIdAsync(nameof(PSTicketStatus.New))).Value;
+
+                await _ticketService.AddNewTicketAsync(ticket);
+                
+                //TODO: Ticket History here
+
+                //Ticket Notification
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DeveloperUserId"] = new SelectList(_context.Users, "Id", "Id", ticket.DeveloperUserId);
-            ViewData["OwnerUserId"] = new SelectList(_context.Users, "Id", "Id", ticket.OwnerUserId);
-            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name", ticket.ProjectId);
-            ViewData["TicketPriorityId"] = new SelectList(_context.TicketPriorities, "Id", "Id", ticket.TicketPriorityId);
-            ViewData["TicketStatusId"] = new SelectList(_context.TicketStatuses, "Id", "Id", ticket.TicketStatusId);
-            ViewData["TicketTypeId"] = new SelectList(_context.TicketTypes, "Id", "Id", ticket.TicketTypeId);
+
+            if (User.IsInRole(nameof(Roles.Admin)))
+            {
+                ViewData["ProjectId"] = new SelectList(await _projectService.GetAllProjectsByCompanyAsync(companyId), "Id", "Name");
+
+            }
+            else
+            {
+                ViewData["ProjectId"] = new SelectList(await _projectService.GetUserProjectsAsync(psUser.Id), "Id", "Name");
+            }
+
+            ViewData["TicketPriorityId"] = new SelectList(await _lookupService.GetTicketPrioritiesAsync(), "Id", "Name");
+            ViewData["TicketTypeId"] = new SelectList(await _lookupService.GetTicketTypesAsync(), "Id", "Name");
+
             return View(ticket);
         }
 
