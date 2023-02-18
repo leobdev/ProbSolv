@@ -64,6 +64,9 @@ namespace ProbSolv.Services
             if (!string.IsNullOrWhiteSpace(file))
             {
                 fileImage = Path.GetExtension(file).Replace(".", "");
+
+                
+
                 return $"/img/contenttype/{fileImage}.png";
             }
             return fileImage;

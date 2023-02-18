@@ -11,6 +11,7 @@ using ProbSolv.Data;
 using ProbSolv.Extensions;
 using ProbSolv.Models;
 using ProbSolv.Models.Enums;
+using ProbSolv.Services;
 using ProbSolv.Services.Interfaces;
 
 namespace ProbSolv.Controllers
@@ -22,14 +23,16 @@ namespace ProbSolv.Controllers
         private readonly IPSLookupService _lookupService;
         private readonly IPSProjectService _projectService;
         private readonly IPSTicketService _ticketService;
+        private readonly IPSFileService _fileService;
 
-        public TicketsController(ApplicationDbContext context, UserManager<PSUser> userManager, IPSLookupService lookupService, IPSProjectService projectService, IPSTicketService ticketService)
+        public TicketsController(ApplicationDbContext context, UserManager<PSUser> userManager, IPSLookupService lookupService, IPSProjectService projectService, IPSTicketService ticketService, IPSFileService fileService)
         {
             _context = context;
             _userManager = userManager;
             _lookupService = lookupService;
             _projectService = projectService;
             _ticketService = ticketService;
+            _fileService = fileService;
         }
 
         // GET: Tickets
@@ -257,6 +260,47 @@ namespace ProbSolv.Controllers
             return RedirectToAction("Details", new { id = ticketComment.TicketId });
 
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddTicketAttachment([Bind("Id,FormFile,Description,TicketId")] TicketAttachment ticketAttachment)
+        {
+            string statusMessage;
+
+            if (ModelState.IsValid && ticketAttachment.FormFile != null)
+            {
+                ticketAttachment.FileData = await _fileService.ConvertFileToByteArrayAsync(ticketAttachment.FormFile);
+                ticketAttachment.FileName = ticketAttachment.FormFile.FileName;
+                ticketAttachment.FileContentType = ticketAttachment.FormFile.ContentType;
+
+                ticketAttachment.Created = DateTimeOffset.Now;
+                ticketAttachment.UserId = _userManager.GetUserId(User);
+
+                await _ticketService.AddTicketAttachmentAsync(ticketAttachment);
+                statusMessage = "Success: New attachment added to Ticket.";
+            }
+            else
+            {
+                statusMessage = "Error: Invalid data.";
+
+            }
+
+            return RedirectToAction("Details", new { id = ticketAttachment.TicketId, message = statusMessage });
+        }
+
+
+
+        public async Task<IActionResult> ShowFile(int id)
+        {
+            TicketAttachment ticketAttachment = await _ticketService.GetTicketAttachmentByIdAsync(id);
+            string fileName = ticketAttachment.FileName;
+            byte[] fileData = ticketAttachment.FileData;
+            string ext = Path.GetExtension(fileName).Replace(".", "");
+
+            Response.Headers.Add("Content-Disposition", $"inline; filename={fileName}");
+            return File(fileData, $"application/{ext}");
+        }
+
 
         // GET: Tickets/Delete/5
         public async Task<IActionResult> Archive(int? id)
