@@ -179,7 +179,7 @@
                                                 </a>
                                                 <div style="font-size:x-small">
                                                     <div class="file-name">
-                                                        <strong>@item.FileDescription</strong>
+                                                        <strong>@item.FileName</strong>
                                                     </div>
                                                     <small>Size: @FileService.FormatFileSize(item.FileData.Length) </small>
                                                 </div>
@@ -203,7 +203,31 @@
                             <hr />
                         </div>
                         <div class="card-body" style="overflow-y:auto;height:1000px;background-color:antiquewhite">
-                            @*Loop to show the history entries for the Ticket*@
+                          
+                            @foreach (TicketHistory history in Model.Histories)
+                            {
+                                <div>
+                                    <span class="date">@history.Created.ToString()</span>
+                                    <h6>@history.Description</h6>
+                                    <span>By: <a href="" title="@history.User.FullName">@history.User.FullName</a></span>
+                                    <div>
+                                        <p>This ticket <b>@history.Property</b> was edited</p>
+                                        <p>@($"Previous {history.Property}: {history.OldValue}")</p>
+                                        <p>@($"Current {history.Property}: {history.NewValue}")</p>
+                                    </div>
+                                    <div class="media">
+                                        <div class="media-body">
+                                            <h6 class="mb-0"></h6>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                            }
+
+
+
                         </div>
                     </div>
                 </div>

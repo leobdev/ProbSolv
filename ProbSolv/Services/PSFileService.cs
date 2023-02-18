@@ -67,7 +67,7 @@ namespace ProbSolv.Services
 
                 
 
-                return $"/img/contenttype/{fileImage}.png";
+                return $"/img/contenttype/png/{fileImage}.png";
             }
             return fileImage;
         }
