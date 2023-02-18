@@ -12,6 +12,7 @@ using ProbSolv.Data;
 using ProbSolv.Extensions;
 using ProbSolv.Models;
 using ProbSolv.Models.Enums;
+using ProbSolv.Models.ViewModels;
 using ProbSolv.Services;
 using ProbSolv.Services.Interfaces;
 
@@ -105,10 +106,21 @@ namespace ProbSolv.Controllers
            
         }
 
+        [HttpGet]
+        public async Task<IActionResult> AssignDeveloper(int id)
+        {
+            AssignDeveloperViewModel model = new();
+
+            model.Ticket = await _ticketService.GetTicketByIdAsync(id);
+            model.Developers = new SelectList(await _projectService.GetProjectMembersByRoleAsync(model.Ticket.ProjectId, nameof(Roles.Developer)),"Id","FullName");
+
+            return View(model);
+        }
+
 
         public async Task<IActionResult> ArchivedTickets()
         {
-            //PSUser psUser = await _userManager.GetUserAsync(User);
+            
             int companyId = User.Identity.GetCompanyId().Value;
 
             List<Ticket> tickets = await _ticketService.GetArchivedTicketsAsync(companyId);
