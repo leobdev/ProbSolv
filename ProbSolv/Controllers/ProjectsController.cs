@@ -103,6 +103,7 @@ namespace ProbSolv.Controllers
             return View(projects);
         }
 
+        [HttpGet]
         public async Task<IActionResult> AssignPM(int projectId)
         {
             int companyId = User.Identity.GetCompanyId().Value;
@@ -127,6 +128,30 @@ namespace ProbSolv.Controllers
             }
 
             return RedirectToAction(nameof(AssignPM), new {projectId = model.Project.Id});
+        }
+
+
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> AssignMembers(int projectId)
+        {
+            ProjectMembersViewModel model = new();
+
+            int companyId = User.Identity.GetCompanyId().Value;
+
+            model.Project = await _projectService.GetProjectByIdAsync(projectId, companyId);
+
+            List<PSUser> developers = await _rolesService.GetUsersInRoleAsync(nameof(Roles.Developer), companyId);
+            List<PSUser> submitters = await _rolesService.GetUsersInRoleAsync(nameof(Roles.Submitter), companyId);
+            List<PSUser> companyMembers = developers.Concat(submitters).ToList();
+
+            List<string> projectMembers = model.Project.Members.Select(m => m.Id).ToList();
+
+            model.Users = new MultiSelectList(companyMembers, "Id", "FullName", projectMembers);
+
+            return View(model);
         }
 
 
