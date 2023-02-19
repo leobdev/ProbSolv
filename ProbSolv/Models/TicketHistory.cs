@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace ProbSolv.Models
 {
@@ -19,6 +20,7 @@ namespace ProbSolv.Models
         public string NewValue { get; set; }
 
         [DisplayName("Date Modified")]
+        [DataType(DataType.Date)]
         public DateTimeOffset? Created { get; set; }
 
         [DisplayName("Description of Change")]

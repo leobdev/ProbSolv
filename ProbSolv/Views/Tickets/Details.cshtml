@@ -230,9 +230,21 @@
                                     <h6>@history.Description</h6>
                                     <span>By: <a href="" title="@history.User.FullName">@history.User.FullName</a></span>
                                     <div>
-                                        <p>This ticket <b>@history.Property</b> was edited</p>
-                                        <p>@($"Previous {history.Property}: {history.OldValue}")</p>
-                                        <p>@($"Current {history.Property}: {history.NewValue}")</p>
+                                        @if (history.Description.Contains("New ticket created"))
+                                        {
+                                            <p>A new ticket was added.</p>
+                                        }
+                                        else if (history.Property.Equals("TicketComment") || history.Property.Equals("TicketAttachment"))
+                                        {
+                                            <p>A <b>@history.Property</b>  was added. </p>
+                                        }
+                                        else
+                                        {
+                                            <p>This ticket <b>@history.Property</b> was edited</p>
+                                            <p>@($"Previous {history.Property}: {history.OldValue}")</p>
+                                            <p>@($"Current {history.Property}: {history.NewValue}")</p>
+
+                                        }
                                     </div>
                                     <div class="media">
                                         <div class="media-body">

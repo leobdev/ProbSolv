@@ -26,8 +26,9 @@ namespace ProbSolv.Controllers
         private readonly IPSProjectService _projectService;
         private readonly IPSTicketService _ticketService;
         private readonly IPSFileService _fileService;
+        private readonly IPSTicketHistoryService _historyService;
 
-        public TicketsController(ApplicationDbContext context, UserManager<PSUser> userManager, IPSLookupService lookupService, IPSProjectService projectService, IPSTicketService ticketService, IPSFileService fileService)
+        public TicketsController(ApplicationDbContext context, UserManager<PSUser> userManager, IPSLookupService lookupService, IPSProjectService projectService, IPSTicketService ticketService, IPSFileService fileService, IPSTicketHistoryService historyService)
         {
             _context = context;
             _userManager = userManager;
@@ -35,6 +36,7 @@ namespace ProbSolv.Controllers
             _projectService = projectService;
             _ticketService = ticketService;
             _fileService = fileService;
+            _historyService = historyService;
         }
 
         // GET: Tickets
@@ -53,21 +55,21 @@ namespace ProbSolv.Controllers
             int companyId = User.Identity.GetCompanyId().Value;
             List<Ticket> tickets = await _ticketService.GetAllTicketsByCompanyAsync(companyId);
 
-            if(User.IsInRole(nameof(Roles.Developer)) || User.IsInRole(nameof(Roles.Submitter)))
+            if (User.IsInRole(nameof(Roles.Developer)) || User.IsInRole(nameof(Roles.Submitter)))
             {
                 return View(tickets.Where(t => t.Archived is false));
             }
             else
             {
                 return View(tickets);
-            }             
+            }
 
         }
 
 
         public async Task<IActionResult> MyTickets()
         {
-            PSUser psUser = await _userManager.GetUserAsync(User);      
+            PSUser psUser = await _userManager.GetUserAsync(User);
 
             List<Ticket> tickets = await _ticketService.GetTicketsByUserIdAsync(psUser.Id, psUser.CompanyId);
 
@@ -75,12 +77,12 @@ namespace ProbSolv.Controllers
 
         }
 
-        [Authorize(Roles="Admin,ProjectManager")]
+        [Authorize(Roles = "Admin,ProjectManager")]
         public async Task<IActionResult> UnassignedTickets()
         {
-            
+
             int companyId = User.Identity.GetCompanyId().Value;
-            string psuserId =  _userManager.GetUserId(User);
+            string psuserId = _userManager.GetUserId(User);
 
             List<Ticket> tickets = await _ticketService.GetUnassignedTicketsAsync(companyId);
 
@@ -93,9 +95,9 @@ namespace ProbSolv.Controllers
 
                 List<Ticket> pmTickets = new();
 
-                foreach(Ticket ticket in tickets)
+                foreach (Ticket ticket in tickets)
                 {
-                    if(await _projectService.IsAssignedProjectManagerAsync(psuserId, ticket.ProjectId))
+                    if (await _projectService.IsAssignedProjectManagerAsync(psuserId, ticket.ProjectId))
                     {
                         pmTickets.Add(ticket);
                     }
@@ -103,7 +105,7 @@ namespace ProbSolv.Controllers
 
                 return View(pmTickets);
             }
-           
+
         }
 
         [HttpGet]
@@ -112,7 +114,7 @@ namespace ProbSolv.Controllers
             AssignDeveloperViewModel model = new();
 
             model.Ticket = await _ticketService.GetTicketByIdAsync(id);
-            model.Developers = new SelectList(await _projectService.GetProjectMembersByRoleAsync(model.Ticket.ProjectId, nameof(Roles.Developer)),"Id","FullName");
+            model.Developers = new SelectList(await _projectService.GetProjectMembersByRoleAsync(model.Ticket.ProjectId, nameof(Roles.Developer)), "Id", "FullName");
 
             return View(model);
         }
@@ -121,13 +123,32 @@ namespace ProbSolv.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AssignDeveloper(AssignDeveloperViewModel model)
         {
-            if(model.DeveloperId != null)
+            if (model.DeveloperId != null)
             {
-                await _ticketService.AssignTicketAsync(model.Ticket.Id, model.DeveloperId);
 
+                PSUser psUser = await _userManager.GetUserAsync(User);
+
+                Ticket oldTicket = await _ticketService.GetTicketAsnoTrackingAsync(model.Ticket.Id);
+
+
+                try
+                {
+                    await _ticketService.AssignTicketAsync(model.Ticket.Id, model.DeveloperId);
+
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+
+
+                Ticket newTicket = await _ticketService.GetTicketAsnoTrackingAsync(model.Ticket.Id);
+                await _historyService.AddHistoryAsync(oldTicket, newTicket, psUser.Id);
             }
 
-            return RedirectToAction(nameof(AssignDeveloper), new {id = model.Ticket.Id});
+
+            return RedirectToAction(nameof(AssignDeveloper), new { id = model.Ticket.Id });
 
 
         }
@@ -135,7 +156,7 @@ namespace ProbSolv.Controllers
 
         public async Task<IActionResult> ArchivedTickets()
         {
-            
+
             int companyId = User.Identity.GetCompanyId().Value;
 
             List<Ticket> tickets = await _ticketService.GetArchivedTicketsAsync(companyId);
@@ -151,7 +172,7 @@ namespace ProbSolv.Controllers
             {
                 return NotFound();
             }
-                        
+
 
             Ticket ticket = await _ticketService.GetTicketByIdAsync(id.Value);
 
@@ -180,8 +201,8 @@ namespace ProbSolv.Controllers
                 ViewData["ProjectId"] = new SelectList(await _projectService.GetUserProjectsAsync(psUser.Id), "Id", "Name");
 
             }
-            
-            ViewData["TicketPriorityId"] = new SelectList(await _lookupService.GetTicketPrioritiesAsync(), "Id", "Name");            
+
+            ViewData["TicketPriorityId"] = new SelectList(await _lookupService.GetTicketPrioritiesAsync(), "Id", "Name");
             ViewData["TicketTypeId"] = new SelectList(await _lookupService.GetTicketTypesAsync(), "Id", "Name");
 
             return View();
@@ -197,17 +218,22 @@ namespace ProbSolv.Controllers
             PSUser psUser = await _userManager.GetUserAsync(User);
             int companyId = User.Identity.GetCompanyId().Value;
 
+
+
             if (ModelState.IsValid)
             {
-                
+
 
                 ticket.Created = DateTimeOffset.Now;
                 ticket.OwnerUserId = psUser.Id;
                 ticket.TicketStatusId = (await _ticketService.LookupTicketStatusIdAsync(nameof(PSTicketStatus.New))).Value;
 
                 await _ticketService.AddNewTicketAsync(ticket);
-                
+
+
                 //TODO: Ticket History here
+                Ticket newTicket = await _ticketService.GetTicketAsnoTrackingAsync(ticket.Id);
+                await _historyService.AddHistoryAsync(null, newTicket, psUser.Id);
 
                 //Ticket Notification
                 return RedirectToAction(nameof(AllTickets));
@@ -236,7 +262,7 @@ namespace ProbSolv.Controllers
             {
                 return NotFound();
             }
-              
+
             Ticket ticket = await _ticketService.GetTicketByIdAsync(id.Value);
 
             if (ticket == null)
@@ -266,6 +292,7 @@ namespace ProbSolv.Controllers
             if (ModelState.IsValid)
             {
                 PSUser psUser = await _userManager.GetUserAsync(User);
+                Ticket oldTicket = await _ticketService.GetTicketAsnoTrackingAsync(ticket.Id);
 
                 try
                 {
@@ -285,13 +312,15 @@ namespace ProbSolv.Controllers
                     }
                 }
                 //TODO: Add ticket History 
+                Ticket newTicket = await _ticketService.GetTicketAsnoTrackingAsync(ticket.Id);
+                await _historyService.AddHistoryAsync(oldTicket, newTicket, psUser.Id);
 
                 return RedirectToAction(nameof(AllTickets));
             }
             ViewData["TicketPriorityId"] = new SelectList(await _lookupService.GetTicketPrioritiesAsync(), "Id", "Name", ticket.TicketPriorityId);
             ViewData["TicketStatusId"] = new SelectList(await _lookupService.GetTicketStatusesAsync(), "Id", "Name", ticket.TicketStatusId);
             ViewData["TicketTypeId"] = new SelectList(await _lookupService.GetTicketTypesAsync(), "Id", "Name", ticket.TicketTypeId);
-            
+
             return View(ticket);
         }
 
@@ -302,13 +331,16 @@ namespace ProbSolv.Controllers
         {
             if (ModelState.IsValid)
             {
+                
+
                 try
                 {
                     ticketComment.UserId = _userManager.GetUserId(User);
-                    ticketComment.Created = DateTimeOffset.Now; 
+                    ticketComment.Created = DateTimeOffset.Now;
 
                     await _ticketService.AddTicketCommentAsync(ticketComment);
 
+                    await _
                 }
                 catch (Exception)
                 {
@@ -392,7 +424,7 @@ namespace ProbSolv.Controllers
             }
 
             Ticket ticket = await _ticketService.GetTicketByIdAsync(id);
-            ticket.Archived = true;            
+            ticket.Archived = true;
             await _ticketService.UpdateTicketAsync(ticket);
 
             return RedirectToAction(nameof(AllTickets));
@@ -406,7 +438,7 @@ namespace ProbSolv.Controllers
                 return NotFound();
             }
 
-           
+
 
             Ticket ticket = await _ticketService.GetTicketByIdAsync(id.Value);
 
