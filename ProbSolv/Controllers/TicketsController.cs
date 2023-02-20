@@ -18,9 +18,10 @@ using ProbSolv.Services.Interfaces;
 
 namespace ProbSolv.Controllers
 {
+    [Authorize ]
     public class TicketsController : Controller
     {
-        //private readonly ApplicationDbContext _context;
+        
         private readonly UserManager<PSUser> _userManager;
         private readonly IPSLookupService _lookupService;
         private readonly IPSProjectService _projectService;
@@ -28,7 +29,12 @@ namespace ProbSolv.Controllers
         private readonly IPSFileService _fileService;
         private readonly IPSTicketHistoryService _historyService;
 
-        public TicketsController(UserManager<PSUser> userManager, IPSLookupService lookupService, IPSProjectService projectService, IPSTicketService ticketService, IPSFileService fileService, IPSTicketHistoryService historyService)
+        public TicketsController(UserManager<PSUser> userManager, 
+                                    IPSLookupService lookupService, 
+                                    IPSProjectService projectService, 
+                                    IPSTicketService ticketService, 
+                                    IPSFileService fileService, 
+                                    IPSTicketHistoryService historyService)
         {
             
             _userManager = userManager;
@@ -99,6 +105,7 @@ namespace ProbSolv.Controllers
 
         }
 
+        [Authorize(Roles = "Admin,ProjectManager")]
         [HttpGet]
         public async Task<IActionResult> AssignDeveloper(int id)
         {
@@ -110,6 +117,7 @@ namespace ProbSolv.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin,ProjectManager")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AssignDeveloper(AssignDeveloperViewModel model)
@@ -399,6 +407,7 @@ namespace ProbSolv.Controllers
 
 
         // GET: Tickets/Delete/5
+        [Authorize(Roles = "Admin,ProjectManager")]
         public async Task<IActionResult> Archive(int? id)
         {
             if (id == null)
@@ -418,6 +427,7 @@ namespace ProbSolv.Controllers
         }
 
         // POST: Tickets/Delete/5
+        [Authorize(Roles = "Admin,ProjectManager")]
         [HttpPost, ActionName("Archive")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ArchiveConfirmed(int id)
@@ -431,7 +441,7 @@ namespace ProbSolv.Controllers
             return RedirectToAction(nameof(AllTickets));
         }
 
-
+        [Authorize(Roles = "Admin,ProjectManager")]
         public async Task<IActionResult> Restore(int? id)
         {
             if (id == null)
@@ -452,6 +462,7 @@ namespace ProbSolv.Controllers
         }
 
         // POST: Tickets/Delete/5
+        [Authorize(Roles = "Admin,ProjectManager")]
         [HttpPost, ActionName("Restore")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RestoreConfirmed(int id)
@@ -462,8 +473,6 @@ namespace ProbSolv.Controllers
 
             return RedirectToAction(nameof(AllTickets));
         }
-
-
 
 
         private async Task<bool> TicketExists(int id)
