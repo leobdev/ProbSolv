@@ -20,7 +20,7 @@ namespace ProbSolv.Controllers
 {
     public class TicketsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        //private readonly ApplicationDbContext _context;
         private readonly UserManager<PSUser> _userManager;
         private readonly IPSLookupService _lookupService;
         private readonly IPSProjectService _projectService;
@@ -28,9 +28,9 @@ namespace ProbSolv.Controllers
         private readonly IPSFileService _fileService;
         private readonly IPSTicketHistoryService _historyService;
 
-        public TicketsController(ApplicationDbContext context, UserManager<PSUser> userManager, IPSLookupService lookupService, IPSProjectService projectService, IPSTicketService ticketService, IPSFileService fileService, IPSTicketHistoryService historyService)
+        public TicketsController(UserManager<PSUser> userManager, IPSLookupService lookupService, IPSProjectService projectService, IPSTicketService ticketService, IPSFileService fileService, IPSTicketHistoryService historyService)
         {
-            _context = context;
+            
             _userManager = userManager;
             _lookupService = lookupService;
             _projectService = projectService;
@@ -39,16 +39,7 @@ namespace ProbSolv.Controllers
             _historyService = historyService;
         }
 
-        // GET: Tickets
-        public async Task<IActionResult> Index()
-        {
-            int companyId = User.Identity.GetCompanyId().Value;
-
-            var tickets = await _ticketService.GetAllTicketsByCompanyAsync(companyId);
-
-
-            return View(tickets);
-        }
+       
 
         public async Task<IActionResult> AllTickets()
         {
@@ -431,10 +422,7 @@ namespace ProbSolv.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ArchiveConfirmed(int id)
         {
-            if (_context.Tickets == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.Tickets'  is null.");
-            }
+            
 
             Ticket ticket = await _ticketService.GetTicketByIdAsync(id);
             ticket.Archived = true;
@@ -466,13 +454,8 @@ namespace ProbSolv.Controllers
         // POST: Tickets/Delete/5
         [HttpPost, ActionName("Restore")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ARestoreConfirmed(int id)
+        public async Task<IActionResult> RestoreConfirmed(int id)
         {
-            if (_context.Tickets == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.Tickets'  is null.");
-            }
-
             Ticket ticket = await _ticketService.GetTicketByIdAsync(id);
             ticket.Archived = false;
             await _ticketService.UpdateTicketAsync(ticket);

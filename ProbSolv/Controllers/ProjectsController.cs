@@ -12,13 +12,14 @@ using ProbSolv.Extensions;
 using ProbSolv.Models;
 using ProbSolv.Models.Enums;
 using ProbSolv.Models.ViewModels;
+using ProbSolv.Services;
 using ProbSolv.Services.Interfaces;
 
 namespace ProbSolv.Controllers
 {
     public class ProjectsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        
         private readonly IPSRolesService _rolesService;
         private readonly IPSLookupService _lookupService;
         private readonly IPSFileService _fileService;
@@ -27,9 +28,9 @@ namespace ProbSolv.Controllers
         private readonly IPSCompanyInfoService _companyInfoService;
 
 
-        public ProjectsController(ApplicationDbContext context, IPSRolesService rolesService, IPSLookupService lookupService, IPSFileService fileService, IPSProjectService projectService, UserManager<PSUser> userManager, IPSCompanyInfoService companyInfoService)
+        public ProjectsController( IPSRolesService rolesService, IPSLookupService lookupService, IPSFileService fileService, IPSProjectService projectService, UserManager<PSUser> userManager, IPSCompanyInfoService companyInfoService)
         {
-            _context = context;
+            
             _rolesService = rolesService;
             _lookupService = lookupService;
             _fileService = fileService;
@@ -38,16 +39,7 @@ namespace ProbSolv.Controllers
             _companyInfoService = companyInfoService;
         }
 
-        // GET: Projects
-        public async Task<IActionResult> Index()
-        {
-            int companyId = User.Identity.GetCompanyId().Value;
-
-            List<Project> projects = await _projectService.GetAllProjectsByCompanyAsync(companyId);
-
-            return View(projects);
-        }
-
+        
 
         public async Task<IActionResult> MyProjects()
         {
@@ -190,7 +182,7 @@ namespace ProbSolv.Controllers
         public async Task<IActionResult> Details(int? id)
         {
 
-            if (id == null || _context.Projects == null)
+            if (id == null )
             {
                 return NotFound();
             }
@@ -318,10 +310,17 @@ namespace ProbSolv.Controllers
                     //TODO: Redirect to AllProjects
                     return RedirectToAction(nameof(AllProjects));
                 }
-                catch (Exception)
+                catch (DbUpdateConcurrencyException)
                 {
 
-                    throw;
+                    if (!await ProjectExists(model.Project.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
 
 
@@ -359,10 +358,6 @@ namespace ProbSolv.Controllers
 
             var project = await _projectService.GetProjectByIdAsync(id, companyId);
 
-            if (_context.Projects == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.Projects'  is null.");
-            }
 
             await _projectService.ArchiveProjectAsync(project);
 
@@ -405,12 +400,14 @@ namespace ProbSolv.Controllers
         }
 
 
-
-
-
-        private bool ProjectExists(int id)
+        private async Task<bool> ProjectExists(int id)
         {
-            return _context.Projects.Any(e => e.Id == id);
+            int companyId = User.Identity.GetCompanyId().Value;
+
+            return (await _projectService.GetAllProjectsByCompanyAsync(companyId)).Any(p => p.Id == id);
+
         }
+
+              
     }
 }
