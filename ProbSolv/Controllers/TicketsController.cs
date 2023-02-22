@@ -18,34 +18,37 @@ using ProbSolv.Services.Interfaces;
 
 namespace ProbSolv.Controllers
 {
-    [Authorize ]
+    [Authorize]
     public class TicketsController : Controller
     {
-        
+
         private readonly UserManager<PSUser> _userManager;
         private readonly IPSLookupService _lookupService;
         private readonly IPSProjectService _projectService;
         private readonly IPSTicketService _ticketService;
         private readonly IPSFileService _fileService;
         private readonly IPSTicketHistoryService _historyService;
+        private readonly IPSNotificationService _notificationService;
 
-        public TicketsController(UserManager<PSUser> userManager, 
-                                    IPSLookupService lookupService, 
-                                    IPSProjectService projectService, 
-                                    IPSTicketService ticketService, 
-                                    IPSFileService fileService, 
-                                    IPSTicketHistoryService historyService)
+        public TicketsController(UserManager<PSUser> userManager,
+                                    IPSLookupService lookupService,
+                                    IPSProjectService projectService,
+                                    IPSTicketService ticketService,
+                                    IPSFileService fileService,
+                                    IPSTicketHistoryService historyService,
+                                    IPSNotificationService notificationService)
         {
-            
+
             _userManager = userManager;
             _lookupService = lookupService;
             _projectService = projectService;
             _ticketService = ticketService;
             _fileService = fileService;
             _historyService = historyService;
+            _notificationService = notificationService;
         }
 
-       
+
 
         public async Task<IActionResult> AllTickets()
         {
@@ -216,12 +219,12 @@ namespace ProbSolv.Controllers
         {
             PSUser psUser = await _userManager.GetUserAsync(User);
             int companyId = User.Identity.GetCompanyId().Value;
+            Notification notification;
 
 
 
             if (ModelState.IsValid)
             {
-
 
                 ticket.Created = DateTimeOffset.Now;
                 ticket.OwnerUserId = psUser.Id;
@@ -230,11 +233,38 @@ namespace ProbSolv.Controllers
                 await _ticketService.AddNewTicketAsync(ticket);
 
 
-                //TODO: Ticket History here
+                //History
                 Ticket newTicket = await _ticketService.GetTicketAsnoTrackingAsync(ticket.Id);
                 await _historyService.AddHistoryAsync(null, newTicket, psUser.Id);
 
                 //Ticket Notification
+                #region Notification
+                PSUser projectManager = await _projectService.GetProjectManagerAsync(ticket.ProjectId);
+
+                notification = new()
+                {
+                    TicketId = ticket.Id,
+                    Title = "New Ticket",
+                    Message = $"New Ticket: {ticket?.Title}, was created by {psUser.FullName}",
+                    Created = DateTimeOffset.Now,
+                    SenderId = psUser?.Id,
+                    RecipientId = projectManager?.Id
+                };
+
+                if (projectManager != null)
+                {
+                    await _notificationService.AddNotificationAsync(notification);
+                }
+                else
+                {
+                    await _notificationService.SendEmailNotificationsByRoleAsync(notification, companyId, nameof(Roles.Admin));
+                }
+                #endregion
+
+
+
+
+
                 return RedirectToAction(nameof(AllTickets));
             }
 
@@ -291,6 +321,7 @@ namespace ProbSolv.Controllers
             if (ModelState.IsValid)
             {
                 PSUser psUser = await _userManager.GetUserAsync(User);
+                int companyId = User.Identity.GetCompanyId().Value;
                 Ticket oldTicket = await _ticketService.GetTicketAsnoTrackingAsync(ticket.Id);
 
                 try
@@ -313,6 +344,30 @@ namespace ProbSolv.Controllers
                 //TODO: Add ticket History 
                 Ticket newTicket = await _ticketService.GetTicketAsnoTrackingAsync(ticket.Id);
                 await _historyService.AddHistoryAsync(oldTicket, newTicket, psUser.Id);
+
+                #region Notification
+                PSUser projectManager = await _projectService.GetProjectManagerAsync(ticket.ProjectId);
+                Notification notification;
+
+                notification = new()
+                {
+                    TicketId = ticket.Id,
+                    Title = $"Ticket modified on project - {oldTicket.Project.Name}",
+                    Message = $"Ticket: {ticket.Id}: {ticket?.Title}, updated by {psUser.FullName}",
+                    Created = DateTimeOffset.Now,
+                    SenderId = psUser?.Id,
+                    RecipientId = projectManager?.Id
+                };
+
+                if (projectManager != null)
+                {
+                    await _notificationService.AddNotificationAsync(notification);
+                }
+                else
+                {
+                    await _notificationService.SendEmailNotificationsByRoleAsync(notification, companyId, nameof(Roles.Admin));
+                }
+                #endregion
 
                 return RedirectToAction(nameof(AllTickets));
             }
@@ -432,7 +487,7 @@ namespace ProbSolv.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ArchiveConfirmed(int id)
         {
-            
+
 
             Ticket ticket = await _ticketService.GetTicketByIdAsync(id);
             ticket.Archived = true;
