@@ -1,7 +1,13 @@
-﻿@model ProbSolv.Models.Invite
+﻿@model ProbSolv.Models.ViewModels.InviteViewModel
+@using Microsoft.AspNetCore.Identity
+@using ProbSolv.Services.Interfaces
+
+@inject UserManager<PSUser> UserManager
 
 @{
     ViewData["Title"] = "Create";
+
+    PSUser psUser = await UserManager.GetUserAsync(User);
 }
 
 <h1>Create</h1>
@@ -13,56 +19,31 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="InviteDate" class="control-label"></label>
-                <input asp-for="InviteDate" class="form-control" />
-                <span asp-validation-for="InviteDate" class="text-danger"></span>
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="JoinDate" class="control-label"></label>
-                <input asp-for="JoinDate" class="form-control" />
-                <span asp-validation-for="JoinDate" class="text-danger"></span>
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CompanyToken" class="control-label"></label>
-                <input asp-for="CompanyToken" class="form-control" />
-                <span asp-validation-for="CompanyToken" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CompanyId" class="control-label"></label>
-                <select asp-for="CompanyId" class ="form-control" asp-items="ViewBag.CompanyId"></select>
+                <label asp-for="LastName" class="control-label"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ProjectId" class="control-label"></label>
-                <select asp-for="ProjectId" class ="form-control" asp-items="ViewBag.ProjectId"></select>
+                <select asp-for="ProjectId" class ="form-control" asp-items="@Model.ProjectList"></select>
             </div>
+            
             <div class="form-group">
-                <label asp-for="InvitorId" class="control-label"></label>
-                <select asp-for="InvitorId" class ="form-control" asp-items="ViewBag.InvitorId"></select>
+                <label asp-for="Message" class="control-label"></label>
+                <textarea asp-for="Message" multiple="multiple" class="form-control"></textarea>
+                <span asp-validation-for="Message" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="InviteeId" class="control-label"></label>
-                <select asp-for="InviteeId" class ="form-control" asp-items="ViewBag.InviteeId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="InviteeEmail" class="control-label"></label>
-                <input asp-for="InviteeEmail" class="form-control" />
-                <span asp-validation-for="InviteeEmail" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="InviteeFirstName" class="control-label"></label>
-                <input asp-for="InviteeFirstName" class="form-control" />
-                <span asp-validation-for="InviteeFirstName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="InviteeLastName" class="control-label"></label>
-                <input asp-for="InviteeLastName" class="form-control" />
-                <span asp-validation-for="InviteeLastName" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsValid" /> @Html.DisplayNameFor(model => model.IsValid)
-                </label>
-            </div>
+           
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>

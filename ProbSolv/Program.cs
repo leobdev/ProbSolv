@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
@@ -47,6 +48,8 @@ builder.Services.AddScoped<IPSFileService, PSFileService>();
 builder.Services.AddScoped<IPSLookupService, PSLookupService>();
 builder.Services.AddScoped<IEmailSender, PSEmailService>();
 builder.Services.Configure<MailSettings>(mailSettings);
+
+builder.Services.AddDataProtection();
 
 
 builder.Services.AddControllersWithViews();

@@ -242,11 +242,12 @@ namespace ProbSolv.Controllers
 
                     await _projectService.AddNewProjectAsync(model.Project);
 
-                    //Add PM is one was chosen
+                    //Add PM if one was chosen
                     if (!string.IsNullOrEmpty(model.PMId))
                     {
                         await _projectService.AddUserToProjectAsync(model.PMId, model.Project.Id);
                     }
+
                 }
                 catch (Exception)
                 {

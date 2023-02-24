@@ -261,10 +261,6 @@ namespace ProbSolv.Controllers
                 }
                 #endregion
 
-
-
-
-
                 return RedirectToAction(nameof(AllTickets));
             }
 
@@ -341,7 +337,7 @@ namespace ProbSolv.Controllers
                         throw;
                     }
                 }
-                //TODO: Add ticket History 
+               
                 Ticket newTicket = await _ticketService.GetTicketAsnoTrackingAsync(ticket.Id);
                 await _historyService.AddHistoryAsync(oldTicket, newTicket, psUser.Id);
 
