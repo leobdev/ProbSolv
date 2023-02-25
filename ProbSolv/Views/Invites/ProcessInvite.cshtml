@@ -1,5 +1,11 @@
 ﻿@model ProbSolv.Models.Invite
 
+@{
+    int id = Model.Id;
+
+    int testId = id;
+}
+
 <div id="wrapper">
     <div class="vertical-align-wrap">
         <div class="vertical-align=middle auth-main">
@@ -22,7 +28,8 @@
                                 @Model.Invitor.FullName has invited you to collaborate on the @Model.Project.Name projec.
                                 <br /><br /> Click the "JOIN" button below to register with the company and begin entering tickets.
                             </p>
-                            <a class="btn btn-primary btn-lg" asp-area="Identity" asp-page="/Account/RegisterByInvite" asp-route-id="@Model.InviteeId"></a>
+                            <input type="hidden" asp-for="Id" />
+                            <a class="btn btn-primary btn-lg" asp-area="Identity" asp-page="/Account/RegisterByInvite"  name="id" asp-route-id="@Model.Id">Accept Invite</a>
                         </div>
 
 

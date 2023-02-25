@@ -254,10 +254,13 @@ namespace ProbSolv.Controllers
                 if (projectManager != null)
                 {
                     await _notificationService.AddNotificationAsync(notification);
+                    await _notificationService.SendEmailNotificationAsync(notification, notification.Title);
                 }
                 else
                 {
                     await _notificationService.SendEmailNotificationsByRoleAsync(notification, companyId, nameof(Roles.Admin));
+                    await _notificationService.SendEmailNotificationAsync(notification, notification.Title);
+
                 }
                 #endregion
 

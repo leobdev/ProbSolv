@@ -73,7 +73,7 @@ namespace ProbSolv.Areas.Identity.Pages.Account
             [Display(Name = "Last Name")]
             public string LastName { get; set; }
 
-            [Required]
+            
             [Display(Name = "Company Name")]
             public string Company { get; set; }
 
@@ -128,7 +128,9 @@ namespace ProbSolv.Areas.Identity.Pages.Account
                     LastName = Input.LastName,
                     UserName = Input.Email,
                     Email = Input.Email,
-                    CompanyId = Input.CompanyId
+                    CompanyId = Input.CompanyId,
+                    
+                    
                 };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
