@@ -6,15 +6,17 @@
     ViewData["Title"] = "Log in";
 }
 
+<img style="width:100px" src="~/img/logos/eFluo-logo2.png" />
 <h1>@ViewData["Title"]</h1>
 
+<p class="">Log in to your account to continue.</p>
 
 
 
-<form class="text-left" method="post">
+<form id="account" class="text-left" method="post">
 
-    <h1 class="">Sign In</h1>
-    <p class="">Log in to your account to continue.</p>
+
+
 
     <div class="form">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -42,7 +44,7 @@
             </div>
         </div>
 
-        <p class="signup-link">Not registered ? <a href="auth_register_boxed.html">Create an account</a></p>
+        <p class="signup-link">Not registered ? <a href="auth_register_boxed.html">Use our demo accounts</a></p>
 
     </div>
 </form>

@@ -43,7 +43,7 @@ body {
       display: block;
       width: 100%; }
   .coming-soon-cont .coming-soon-content > h4 {
-    font-size: 40px;
+    font-size: 50px;
     margin-top: 30px;
     font-weight: 700;
     color: #4361ee;
@@ -91,7 +91,7 @@ body {
       display: block; }
   .coming-soon-cont .coming-soon-content > h3 {
     text-align: center;
-    font-size: 21px;
+    font-size: 24px;
     font-weight: 700;
     margin-top: 75px;
     margin-bottom: 40px; }

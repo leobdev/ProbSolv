@@ -18,6 +18,11 @@ body {
   padding: 0;
   background-color: #fff; }
 
+.row .col .signup-link a {
+    color: #4361ee;
+    border-bottom: 1px solid;
+}
+
 .form-form {
   width: 50%;
   display: flex;
