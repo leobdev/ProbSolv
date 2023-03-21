@@ -52,7 +52,7 @@ namespace ProbSolv.Services
             }
         }
 
-        public async Task<List<Notification>> GetSetnNotificationsAsync(string userId)
+        public async Task<List<Notification>> GetSentNotificationsAsync(string userId)
         {
             try
             {
@@ -68,6 +68,40 @@ namespace ProbSolv.Services
             }
             catch (Exception)
             {
+                throw;
+            }
+        }
+
+        public async Task<List<Notification>> GetUserNotificationsAsync(string userId)
+        {
+            try
+            {
+                return await _context.Notifications.Where(n => n.SenderId == userId || n.RecipientId == userId)
+                                                   .Include(n => n.Ticket)
+                                                   .Include(n => n.Sender)
+                                                   .Include(n => n.Recipient)                                                       
+                                                   .ToListAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        
+
+        public async Task MarkAsNewAsync(Notification notification)
+        {
+            try
+            {
+                notification.Viewed = true;
+                _context.Update(notification);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+
                 throw;
             }
         }

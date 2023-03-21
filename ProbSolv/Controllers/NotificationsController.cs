@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProbSolv.Data;
 using ProbSolv.Models;
+using ProbSolv.Services.Interfaces;
 
 namespace ProbSolv.Controllers
 {
@@ -15,18 +17,27 @@ namespace ProbSolv.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IEmailSender _emailSender;
+        private readonly UserManager<PSUser> _userManager;
+        private readonly IPSNotificationService _notificationService;
 
-        public NotificationsController(ApplicationDbContext context, IEmailSender emailSender)
+        public NotificationsController(ApplicationDbContext context, IEmailSender emailSender, UserManager<PSUser> userManager, IPSNotificationService notificationService)
         {
             _context = context;
             _emailSender = emailSender;
+            _userManager = userManager;
+            _notificationService = notificationService;
         }
 
         // GET: Notifications
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Notifications.Include(n => n.Recipient).Include(n => n.Sender).Include(n => n.Ticket);
-            return View(await applicationDbContext.ToListAsync());
+            PSUser psUser = await _userManager.GetUserAsync(User);
+
+            List<Notification> notifications = await _notificationService.GetUserNotificationsAsync(psUser.Id);
+
+            //var notifications = await _context.Notifications.ToListAsync();
+
+            return View(notifications);
         }
 
         // GET: Notifications/Details/5
@@ -46,6 +57,8 @@ namespace ProbSolv.Controllers
             {
                 return NotFound();
             }
+
+            await _notificationService.MarkAsNewAsync(notification);
 
             return View(notification);
         }

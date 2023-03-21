@@ -1,80 +1,84 @@
 ﻿@page
 @model RegisterModel
 @{
+    Layout = "/Views/Shared/_LoginLayout.cshtml";
     ViewData["Title"] = "Register";
 }
 
 <h1>@ViewData["Title"]</h1>
 
-<div class="row">
-    <div class="col-md-4">
-        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Create a new account.</h2>
-            <hr />
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-floating">
-                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" />
-                <label asp-for="Input.Email"></label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
+
+
+<h1 class="">Register</h1>
+<p class="signup-link register">Already have an account? <a asp-action="/Account/Login">Log in</a></p>
+<form class="text-left" id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+    <div class="form">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div id="username-field" class="field-wrapper input">
+            <label asp-for="Input.FirstName">FIRST NAME</label>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <input id="username" asp-for="Input.FirstName" placeholder="Username" class="form-control" autocomplete="username" aria-required="true" />
+            <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+        </div>
+
+        <div id="username-field" class="field-wrapper input">
+            <label asp-for="Input.LastName">LAST NAME</label>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <input id="username" asp-for="Input.LastName" placeholder="Username class="form-control" autocomplete="username" aria-required="true" />
+            <span asp-validation-for="Input.LastName" class="text-danger"></span>
+        </div>
+
+
+        <div id="email-field" class="field-wrapper input">
+            <label for="email">EMAIL</label>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-at-sign register"><circle cx="12" cy="12" r="4"></circle><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"></path></svg>
+            <input id="email" type="text" asp-for="Input.Email" class="form-control" placeholder="email" autocomplete="username" aria-required="true" />
+            <span asp-validation-for="Input.Email" class="text-danger"></span>
+        </div>
+
+        <div id="password-field" class="field-wrapper input mb-2">
+            <div class="d-flex justify-content-between">
+                <label asp-for="Input.Password">PASSWORD</label>
             </div>
-            <div class="form-floating">
-                <input asp-for="Input.FirstName" class="form-control" autocomplete="username" aria-required="true" />
-                <label asp-for="Input.FirstName"></label>
-                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-lock"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            <input id="password" asp-for="Input.Password" type="password" placeholder="Password" class="form-control" autocomplete="new-password" aria-required="true" />
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="toggle-password" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            <span asp-validation-for="Input.Password" class="text-danger"></span>
+        </div>
+
+        <div id="password-field" class="field-wrapper input mb-2">
+            <div class="d-flex justify-content-between">
+                <label asp-for="Input.ConfirmPassword">CONFIRM PASSWORD</label>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-lock"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            <input id="password" asp-for="Input.ConfirmPassword" type="password" placeholder="Confirm Password" class="form-control" autocomplete="new-password" aria-required="true" />
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="toggle-password" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+        </div>
+
+
+        <div class="field-wrapper terms_condition">
+            <div class="n-chk">
+                <label class="new-control new-checkbox checkbox-primary">
+                    <input type="checkbox" class="new-control-input">
+                    <span class="new-control-indicator"></span><span>I agree to the <a href="javascript:void(0);">  terms and conditions </a></span>
+                </label>
             </div>
 
-            <div class="form-floating">
-                <input asp-for="Input.LastName" class="form-control" autocomplete="username" aria-required="true" />
-                <label asp-for="Input.LastName"></label>
-                <span asp-validation-for="Input.LastName" class="text-danger"></span>
-            </div>
+        </div>
 
-            <div class="form-floating">
-                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" />
-                <label asp-for="Input.Password"></label>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
+        <div class="d-sm-flex justify-content-between">
+            <div class="field-wrapper">
+                <button type="submit" class="btn btn-primary" value="">Get Started!</button>
             </div>
-            <div class="form-floating">
-                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" />
-                <label asp-for="Input.ConfirmPassword"></label>
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div>
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-        </form>
+        </div>
+
     </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">
-                                article
-                                about setting up this ASP.NET application to support logging in via external services
-                            </a>.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
-                        </div>
-                    </form>
-                }
-            }
-        </section>
-    </div>
-</div>
+</form>
+
+
+
+
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
