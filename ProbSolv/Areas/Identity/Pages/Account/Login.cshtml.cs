@@ -22,11 +22,13 @@ namespace ProbSolv.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<PSUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly IConfiguration _configuration;
 
-        public LoginModel(SignInManager<PSUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<PSUser> signInManager, ILogger<LoginModel> logger, IConfiguration configuration)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _configuration = configuration;
         }
 
         /// <summary>
@@ -102,11 +104,36 @@ namespace ProbSolv.Areas.Identity.Pages.Account
             ReturnUrl = returnUrl;
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync(string returnUrl = null, string demoEmail = null)
         {
             returnUrl ??= Url.Content("~/Home/Dashboard");
 
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            if (!string.IsNullOrWhiteSpace(demoEmail))
+            {
+                var email = _configuration[demoEmail];
+                var password = _configuration["DemoUserPassword"];
+
+                var result = await _signInManager.PasswordSignInAsync(email, password, false, lockoutOnFailure: false);
+                if (result.Succeeded)
+                {
+                    _logger.LogInformation("User logged in.");
+                    return LocalRedirect(returnUrl);
+                    //Uncomment below for redirect to dashboard
+                    //return RedirectToAction("Dashboard", "Home");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    return Page();
+                }
+
+            }
+
+
+
+
+
+
 
             if (ModelState.IsValid)
             {

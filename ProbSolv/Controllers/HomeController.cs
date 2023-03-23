@@ -33,6 +33,11 @@ namespace ProbSolv.Controllers
             return View();
         }
 
+        public IActionResult DemoAccounts()
+        {
+            return View();
+        }
+
         public async Task<IActionResult> Dashboard()
         {
             DashboardViewModel model = new();

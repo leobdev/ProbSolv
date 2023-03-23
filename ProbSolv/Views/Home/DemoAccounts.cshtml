@@ -12,9 +12,9 @@
     <link rel="icon" type="image/x-icon" href="/img/favicon.ico" />
     <!-- BEGIN GLOBAL MANDATORY STYLES -->
     <link href="https://fonts.googleapis.com/css?family=Quicksand:400,500,600,700&display=swap" rel="stylesheet">
-    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <link href="assets/css/plugins.css" rel="stylesheet" type="text/css" />
-    <link href="assets/css/pages/coming-soon/style.css" rel="stylesheet" type="text/css" />
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/css/plugins.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/css/pages/coming-soon/style.css" rel="stylesheet" type="text/css" />
     <!-- END GLOBAL MANDATORY STYLES -->
     <link rel="stylesheet" type="text/css" href="assets/css/forms/theme-checkbox-radio.css">
     <link rel="stylesheet" type="text/css" href="assets/css/forms/switches.css">
@@ -36,17 +36,37 @@
                             </p>
                         </div>
                         <br />
-                        <div class="row h-25">
-                            <div class="col text-center">
-                                <a class="btn btn-primary btn-lg" asp-action="DemoAccounts" asp-controller="Home">Try it free</a>
 
+                        <div class="row">
+                            <div class="col">
+                                <section>
+                                    <h4>Use a Demo to log in.</h4>
+                                    <hr />
+                                    <form class="" id="account" a asp-area="Identity" asp-page="/Account/Login" method="post">
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col btn-group-vertical" aria-label="Vertical button group">
+                                                    <button type="submit" class="btn btn-primary btn-lg"  name="demoEmail" value="DemoAdminEmail">Demo Admin</button>
+                                                    <br />
+                                                    <button type="submit" class="btn btn-primary btn-lg" name="demoEmail" value="DemoPMEmail">Demo PM</button>
+                                                    <br />
+                                                    <button type="submit" class="btn btn-primary btn-lg" name="demoEmail" value="DemoDevEmail">Demo Developer</button>
+                                                    <br />
+                                                    <button type="submit" class="btn btn-primary btn-lg" name="demoEmail" value="DemoSubEmail">Demo Submitter</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </section>
                             </div>
-                            <br />
                         </div>
+
+
+
                         <br />
                         <div class="row">
-                            <div class="col ">
-                                <p class="text-center">Or <a asp-area="Identity" asp-page="/Account/Login" style="color: #4361ee;border-bottom: 2px;"><b>Log in</b></a> if you already have an account.</p>
+                            <div class="col-12 offset-1">
+                                <p style="text-align:center" class="signup-link ">Or <a asp-area="Identity" asp-page="/Account/Login" style="color: #4361ee;border-bottom: 2px;"><b>Log in</b></a> if you already have an account.</p>
                             </div>
 
                         </div>
