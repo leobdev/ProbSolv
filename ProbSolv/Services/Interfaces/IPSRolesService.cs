@@ -22,6 +22,8 @@ namespace ProbSolv.Services.Interfaces
 
         public Task<string> GetRoleNameByIdAsync(string roleId);
 
+        public Task<string> GetUserMainRoleAsync(PSUser user);
+
 
     }
 }

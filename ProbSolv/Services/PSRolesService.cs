@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ProbSolv.Data;
 using ProbSolv.Models;
+using ProbSolv.Models.Enums;
 using ProbSolv.Services.Interfaces;
 
 namespace ProbSolv.Services
@@ -64,6 +65,26 @@ namespace ProbSolv.Services
                 IEnumerable<string> result = await _userManager.GetRolesAsync(user);
 
                 return result;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<string> GetUserMainRoleAsync(PSUser user)
+        {
+            try
+            {
+                IEnumerable<string> userRoles = await _userManager.GetRolesAsync(user);
+
+                List<Roles> allRoles = userRoles.Select(r => (Roles)Enum.Parse(typeof(Roles), r)).ToList();
+
+                string mainRole = allRoles.OrderBy(r => (int)r).FirstOrDefault().ToString();
+
+                return mainRole;
+
             }
             catch (Exception)
             {
