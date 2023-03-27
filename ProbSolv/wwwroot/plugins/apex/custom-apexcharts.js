@@ -305,10 +305,12 @@ var donutChart = {
         height: 350,
         type: 'donut',
         toolbar: {
-          show: false,
+            show: false,
         }
     },
-    // colors: ['#4361ee', '#888ea8', '#e3e4eb', '#d3d3d3'],
+    stroke: {
+        colors: '#0e1726'
+    },
     series: [44, 55, 41, 17],
     responsive: [{
         breakpoint: 480,

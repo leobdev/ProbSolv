@@ -118,29 +118,11 @@
         <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 layout-spacing">
             <div class="widget widget-table-one">
                 <div class="widget-heading">
-                    <h5 class="">User Stats</h5>                    
+                    <h5 class="">User Stats</h5>
                 </div>
 
                 <div class="widget-content">
-                    <div class="transactions-list t-secondary">
-                        <div class="t-item">
-                            <div class="t-company-name">
-                                <div class="t-icon">
-                                    <div class="avatar avatar-xl">
-                                        <span class="avatar-title">NU</span>
-                                    </div>
-                                </div>
-                                <div class="t-name">
-                                    <h4>New Users</h4>                                    
-                                </div>
-
-                            </div>
-                            <div class="t-rate rate-inc">
-                                <p><span>@Model.Members.Count</span></p>
-                            </div>
-                        </div>
-                    </div>
-
+                   
                     <div class="transactions-list t-info">
                         <div class="t-item">
                             <div class="t-company-name">
@@ -151,7 +133,7 @@
                                 </div>
                                 <div class="t-name">
                                     <h4>Total Users</h4>
-                                    
+
                                 </div>
                             </div>
                             <div class="t-rate rate-inc">
@@ -170,7 +152,7 @@
                                 </div>
                                 <div class="t-name">
                                     <h4>Tickets in Development</h4>
-                                   
+
                                 </div>
 
                             </div>
@@ -190,7 +172,7 @@
                                 </div>
                                 <div class="t-name">
                                     <h4>Total Developers</h4>
-                                   
+
                                 </div>
 
                             </div>
@@ -201,7 +183,7 @@
                     </div>
 
 
-                   
+
 
 
 
@@ -210,7 +192,7 @@
 
         </div>
 
-            <!--Company Data-->
+        <!--Company Data-->
         <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 layout-spacing">
             <div class="widget widget-three">
                 <div class="widget-heading">
@@ -224,28 +206,28 @@
                     <div class="order-summary">
                         <div class="summary-list">
                             <div class="w-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                             </div>
                             <div class="w-summary-details">
                                 <div class="w-summary-info">
                                     <h6>Members</h6>
                                     <p class="summary-count">@Model.Members.Count</p>
                                 </div>
-                                <div class="w-summary-stats">                                    
+                                <div class="w-summary-stats">
                                 </div>
                             </div>
                         </div>
 
                         <div class="summary-list">
                             <div class="w-icon">
-                                <i data-feather="users"></i><span class="icon-name"> users</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-credit-card"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
                             </div>
                             <div class="w-summary-details">
                                 <div class="w-summary-info">
                                     <h6>Projects</h6>
                                     <p class="summary-count">@Model.Members.Count</p>
                                 </div>
-                                <div class="w-summary-stats">                                    
+                                <div class="w-summary-stats">
                                 </div>
                             </div>
                         </div>
@@ -259,7 +241,7 @@
                                     <h6>Tickets</h6>
                                     <p class="summary-count">@Model.Tickets.Count</p>
                                 </div>
-                                <div class="w-summary-stats">                                   
+                                <div class="w-summary-stats">
                                 </div>
                             </div>
                         </div>
@@ -271,9 +253,22 @@
             </div>
 
         </div>
+
+
         <!--Priority Projects-->
         <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 layout-spacing">
+            <div class="widget widget-chart-two">
+                <div class="widget-heading">
+                    <h5 class="">Projects Priority (%) </h5>
+                </div>
+                <div class="widget-content">
+                    <div id="donut" class=""></div>
+                </div>
+            </div>
+
         </div>
+
+
         <!--Submitters/Devs/PMs distribution-->
         <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 layout-spacing">
         </div>
@@ -490,18 +485,108 @@
         </div>
     </div>
 </div>
-</div>
+
 
 
 @section scripts{
 
-    <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
-    <script src="assets/js/libs/jquery-3.1.1.min.js"></script>
-    <script src="bootstrap/js/popper.min.js"></script>
-    <script src="bootstrap/js/bootstrap.min.js"></script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 
+
+    <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
+    <script src="/assets/js/libs/jquery-3.1.1.min.js"></script>
+    <script src="/bootstrap/js/popper.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+    @*<script src="/plugins/perfect-scrollbar/perfect-scrollbar.min.js"></script>*@
+    <script src="/assets/js/app.js"></script>
+    <script>
+        $(document).ready(function () {
+            App.init();
+        });
+    </script>
+    <script src="/assets/js/custom.js"></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->
-    <script src="assets/js/pages/coming-soon/coming-soon.js"></script>
+    <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
+    <script src="/plugins/apex/apexcharts.min.js"></script>
+    <scrip src="/"></scrip>
+    <!-- END GLOBAL MANDATORY SCRIPTS -->
+
+    <scripts src="/assets/js/widgets/modules-widgets.js"></scripts>
+
+
+    <!--Apex Charts/Donut/Sales by Category-->
+
+
+
+    <script>
+
+    </script>
+
+    <script>
+
+        $.ajax({
+            type: "POST",
+            url: "/Home/DonutMethod",
+            data: '{}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+
+
+                //var options = {
+                //    series: [44, 55, 41, 17, 15],
+                //    chart: {
+                //        type: 'donut',
+                //    },
+                //    responsive: [{
+                //        breakpoint: 480,
+                //        options: {
+                //            chart: {
+                //                width: 150
+                //            },
+                //            legend: {
+                //                position: 'bottom'
+                //            }
+                //        }
+                //    }]
+                //};
+
+                //var chart = new ApexCharts(document.querySelector("#chart"), options);
+                //chart.render();
+
+
+                //Donut
+                var donutChartCanvas = $('#donutChart').get(0).getContext('2d')
+                var donutData = result
+
+                var donutOptions = {
+                    maintainAspectRatio: false,
+                    responsive: true,
+                }
+
+                var abc = new ApexCharts(
+                    document.querySelector("#donutChart"),                  
+                    new Chart(donutChartCanvas, {
+                       type: 'donut',
+                       data: donutData,
+                       options: donutOptions
+                )
+
+                abc.render();
+
+            },
+
+            failure: function (result) {
+                alert(result.d);
+            },
+            error: function (result) {
+                alert(result.d);
+            }
+        });
+
+    </script>
 
 
     <!--Google Charts-->
@@ -558,7 +643,8 @@
                     var options = {
                         title: 'Company Ticket Distribution',
                         pieHole: 0.3,
-                        chartArea: { left: 0, bottom: 15, width: '100%', height: '100%' },
+                        chartArea: { left: 0, bottom: 20, width: '100%', height: '100%' },
+                        colors: ['#25d5e4', '#1abc9c', '#e2a03f', '#e95f2b'],
                         legend: { position: 'bottom' }
                     };
                     var chart = new google.visualization.PieChart($("#donut")[0]);
@@ -582,16 +668,16 @@
         var morrisDonutData = [{
             label: "Low",
             value: @Model.Tickets.Where(t=>t.TicketPriority.Name == nameof(PSTicketPriority.Low)).Count()
-                                                                                            }, {
+                                                                                                                    }, {
             label: "Medium",
             value: @Model.Tickets.Where(t=>t.TicketPriority.Name == nameof(PSTicketPriority.Medium)).Count()
-                                                                                            }, {
+                                                                                                                    }, {
             label: "High",
             value: @Model.Tickets.Where(t=>t.TicketPriority.Name == nameof(PSTicketPriority.High)).Count()
-                                                                                            }, {
+                                                                                                                    }, {
             label: "Urgent",
             value: @Model.Tickets.Where(t=>t.TicketPriority.Name == nameof(PSTicketPriority.Urgent)).Count()
-                                                                                            }];
+                                                                                                                    }];
 
 
         /*
@@ -636,7 +722,7 @@
         @Model.Tickets.Where(t=> t.TicketStatus.Name ==nameof(PSTicketStatus.New)).Count(),
         @Model.Tickets.Where(t=> t.TicketStatus.Name ==nameof(PSTicketStatus.Resolved)).Count(),
         @Model.Tickets.Where(t=> t.TicketStatus.Name ==nameof(PSTicketStatus.Testing)).Count()
-                                                                                                        ],
+                                                                                                                                ],
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.2)',
                         'rgba(54, 162, 235, 0.2)',
@@ -657,8 +743,7 @@
             maintainAspectRatio: false,
             responsive: true,
         };
-        //Create pie or douhnut chart
-        // You can switch between pie and douhnut using the method below.
+
         new Chart(donutChartCanvas, {
             type: 'doughnut',
             data: donutData,

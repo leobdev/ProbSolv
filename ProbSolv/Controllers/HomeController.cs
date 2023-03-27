@@ -160,7 +160,41 @@ namespace ProbSolv.Controllers
             return Json(plotlyData);
         }
 
+        [HttpPost]
+        public async Task<JsonResult> DonutMethod()
+        {
+            int companyId = User.Identity.GetCompanyId().Value;
 
+
+            List<Project> projects = await _projectService.GetAllProjectsByCompanyAsync(companyId);
+
+            DonutViewModel chartData = new();
+            //chartData.labels = projects.Select(p => p.Name).ToArray();
+            chartData.labels = new string[] { "cc", "bb", "aa" };
+            chartData.series = new int[] { 33, 22, 11 };
+
+
+            List<DonutSubData> dsArray = new();
+            List<int> tickets = new();
+            List<string> colors = new();
+
+            foreach (Project prj in projects)
+            {
+                tickets.Add(prj.Tickets.Count());
+
+            }
+
+            DonutSubData temp = new()
+            {
+                data = tickets.ToArray(),
+                backgroundColor = colors.ToArray()
+            };
+            dsArray.Add(temp);
+
+            chartData.datasets = dsArray.ToArray();
+
+            return Json(chartData);
+        }
 
 
 
