@@ -49,6 +49,9 @@ namespace ProbSolv.Controllers
                                                        .ToList();
             model.Tickets = model.Projects.SelectMany(p => p.Tickets).ToList();
             model.Members = model.Company.Members.ToList();
+            model.Notifications = model.Projects.SelectMany(p => p.Tickets).SelectMany(t => t.Notifications).ToList();
+
+
 
             return View(model);
         }

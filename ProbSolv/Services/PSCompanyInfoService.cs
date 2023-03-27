@@ -77,7 +77,7 @@ namespace ProbSolv.Services
                 result = await _context.Companies
                     .Include(x => x.Members)
                     .Include(x => x.Projects)
-                .Include(x => x.Invites)
+                    .Include(x => x.Invites)                    
                     .FirstOrDefaultAsync(x => x.Id == companyId);
             }
 

@@ -10,5 +10,7 @@
 
         public List<PSUser> Members { get; set; }
 
+        public List<Notification> Notifications { get; set; }
+
     }
 }
