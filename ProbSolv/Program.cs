@@ -48,6 +48,7 @@ builder.Services.AddScoped<IPSFileService, PSFileService>();
 builder.Services.AddScoped<IPSLookupService, PSLookupService>();
 builder.Services.AddScoped<IEmailSender, PSEmailService>();
 builder.Services.Configure<MailSettings>(mailSettings);
+builder.Services.AddScoped<IStatusService, StatusService>();
 
 builder.Services.AddDataProtection();
 
