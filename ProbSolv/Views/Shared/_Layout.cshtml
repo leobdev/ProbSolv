@@ -23,8 +23,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
-    <title>eFluo - Sales Dashboard </title>
-    <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico" />
+    <title>eFluo - Ticket Manager </title>
+    <link rel="icon" type="image/x-icon" href="/img/favicon.ico" />
     <link href="/assets/css/loader.css" rel="stylesheet" type="text/css" />
     <script src="/assets/js/loader.js"></script>
     <!-- BEGIN GLOBAL MANDATORY STYLES -->
@@ -48,6 +48,11 @@
     <link rel="stylesheet" type="text/css" href="/plugins/table/datatable/dt-global_style.css">
     <link rel="stylesheet" type="text/css" href="/plugins/table/datatable/custom_dt_custom.css">
     <!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
+
+    <!-- include summernote css -->
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+
+
 </head>
 <body class="sidebar-noneoverflow">
     <!-- BEGIN LOADER -->
@@ -269,7 +274,7 @@
                                 <a asp-action="MyProjects" asp-controller="Projects"> My Projects  </a>
                             </li>
                             <li>
-                                <a asp-action="Create" asp-controller="Projects"> Add Projects </a>
+                                <a asp-action="Create" asp-controller="Projects"> Add a Project </a>
                             </li>
                             <li>
                                 <!--Create new View and Action called ProjectsGrid for this button / Refer to BT Demo (4:09)-->
@@ -493,6 +498,16 @@
     <script src="/assets/js/widgets/modules-widgets.js"></script>
     <script src="/plugins/table/datatable/datatables.js"></script>
 
+    <!-- include summernote js -->
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#summernote').summernote({
+                height: 200
+            });
+        });
+    </script>
 
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
     @await RenderSectionAsync("Scripts", required: false)
