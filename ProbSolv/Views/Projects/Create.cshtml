@@ -27,29 +27,30 @@
                         </div>
                         <div class="row">
 
-                            <div class="form-group col-3">
+                            <div class="form-group col-6">
                                 <label asp-for="Project.StartDate" class="control-label"></label>
                                 <input asp-for="Project.StartDate" class="form-control" />
                                 <span asp-validation-for="Project.StartDate" class="text-danger"></span>
                             </div>
-                            <div class="form-group col-3">
+                            <div class="form-group col-6">
                                 <label asp-for="Project.EndDate" class="control-label"></label>
                                 <input asp-for="Project.EndDate" class="form-control" />
                                 <span asp-validation-for="Project.EndDate" class="text-danger"></span>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row ">
 
                             @if (User.IsInRole(Roles.Admin.ToString()))
                             {
-                                <div class="form-group col-3">
+                                    @*Fix up PM SelectList*@
+                                <div class="form-group col-6">
                                     <label class="control-label">Project Manager</label>
                                     <select asp-for="PMId" class="form-control" required asp-items="@Model.PMList">
                                         <option>Choose one</option>
                                     </select>
                                 </div>
                             }
-                            <div class="form-group col-3">
+                            <div class=" col-6">
                                 <label class="control-label">Choose a priority</label>
                                 <select asp-for="Project.ProjectPriorityId" class="form-control" required asp-items="@Model.PriorityList">
                                     <option>Choose one</option>
@@ -59,25 +60,26 @@
                         @*Set up image capture*@
                         <div class="row>">
 
-                            <div class="form-group col-3">
-                                <label class="control-label">Project Image</label>
-                                <input asp-for="Project.ImageFormFile" class="form-control" type="file" accept=".png, .jpg, .jpeg, .gif"
-                                       onchange="document.getElementById('imageFileData').src = windows.URL.createObjectURL(this.files[0])" />
-                                <span asp-validation-for="Project.ImageFormFile" class="text-danger"></span>
-                            </div>
-                            <div class=" col-3">
+                            <div class="form-group">
+                                
 
-                                <label>Image Preview</label>
-                                @if (Model.Project?.ImageFileData != null)
-                                {
-                                    <img id="imageFileData" class="img-fluid img-thumbnail" style="width:100px;height:80px" src="data:image/*;base64,@(Convert.ToBase64String(Model.Project.ImageFileData))" />
-                                }
-                                else
-                                {
-                                    <img id="imageFileData" class="img-fluid img-thumbnail" style="width:100px;height:80px" src="  " />
+                                    <label >Project Image</label>
+                                    <input asp-for="Project.ImageFormFile"  type="file" accept=".png, .jpg, .jpeg, .gif"
+                                           onchange="document.getElementById('imageFileData').src = window.URL.createObjectURL(this.files[0])" />
+                                    <span asp-validation-for="Project.ImageFormFile" class="text-danger"></span>
+                                
 
-                                }
-                                @*Fix up PM SelectList*@
+                                    <label>Image Preview</label>
+                                    @if (Model.Project?.ImageFileData != null)
+                                    {
+                                    <img id="imageFileData" class="img-fluid img-thumbnail" style="width:100px;height:100px" src="data:image/*;base64,@(Convert.ToBase64String(Model.Project.ImageFileData))" />
+                                    }
+                                    else
+                                    {
+                                        <img id="imageFileData" class="img-fluid img-thumbnail" style="width:100px;height:100px" src="  " />
+
+                                    }
+                                
                             </div>
                         </div>
                         <div class="form-group">
@@ -88,7 +90,7 @@
 
                         <div class="form-group">
                             <input type="submit" value="Create" class="btn btn-primary" />
-                            <a asp-action="AllProjects" class="btn btn-outline-primary">Back to List</a>
+                            <a asp-action="AllProjects" class="btn btn-outline-dark">Back to List</a>
                         </div>
                     </form>
                 </div>
@@ -98,6 +100,27 @@
 
 </div>
 @section Scripts {
+
+    <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
+    <script src="/assets/js/libs/jquery-3.1.1.min.js"></script>
+    <script src="/bootstrap/js/popper.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+    <script src="//plugins/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="/assets/js/app.js"></script>
+    <script src="/assets/js/custom.js"></script>
+    <script>
+        $(document).ready(function () {
+            App.init();
+        });
+    </script>
+
+    <!-- END GLOBAL MANDATORY SCRIPTS -->
+    <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
+    <script src="plugins/apex/apexcharts.min.js"></script>
+    <script src="assets/js/dashboard/dash_1.js"></script>
+    <script src="/assets/js/widgets/modules-widgets.js"></script>
+    <script src="/plugins/table/datatable/datatables.js"></script>
+
     <script src="plugins/highlight/highlight.pack.js"></script>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
