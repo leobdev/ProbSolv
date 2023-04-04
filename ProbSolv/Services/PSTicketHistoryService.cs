@@ -138,7 +138,7 @@ namespace ProbSolv.Services
                         NewValue = newTicket.DeveloperUser?.FullName,
                         Created = DateTimeOffset.Now,
                         UserId = userId,
-                        Description = $"New developer: {newTicket.DeveloperUser.UserName}"
+                        Description = $"New developer: {newTicket.DeveloperUser.FullName}"
                     };
 
                     await _context.TicketHistories.AddAsync(history);
@@ -222,7 +222,7 @@ namespace ProbSolv.Services
                                                          .FirstOrDefaultAsync(p => p.Id == projectId);
 
 
-                List<TicketHistory> ticketHistories = project.Tickets.SelectMany(t => t.Histories).ToList();
+                List<TicketHistory> ticketHistories = project.Tickets.SelectMany(t => t.Histories).OrderByDescending(t => t.Id).ToList();
 
                 return ticketHistories;
             }

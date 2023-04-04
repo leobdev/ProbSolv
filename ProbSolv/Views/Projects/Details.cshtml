@@ -6,7 +6,7 @@
 @inject UserManager<PSUser> UserManager
 @inject IPSProjectService ProjectService
 @inject IPSTicketHistoryService HistoryService
-@inject IStatusService StatusService
+@inject IPSBadgeService BadgeService
 @inject IPSRolesService RolesService
 
 @{
@@ -151,7 +151,7 @@
                                                     {
                                                         if (User.IsInRole(nameof(Roles.Admin)) || User.IsInRole(nameof(Roles.ProjectManager)))
                                                         {
-                                                            <a class="btn btn-xs btn-info" asp-action="AssignDeveloper" asp-controller="Home" asp-route-ticketId="@ticket.Id">Assign Dev</a>
+                                                            <a class="btn btn-xs btn-info" asp-controller="Tickets" asp-action="AssignDeveloper" asp-route-id="@ticket.Id">Assign a Dev</a>
                                                         }
 
                                                     }
@@ -165,22 +165,22 @@
                                                 {
                                                     <td class="text-center"><span class="btn btn-outline-primary">@ticket.TicketStatus.Name </span></td>
                                                 }
-                                                <td class="text-center"><span class="badge @StatusService.GetPriorityBadge(ticket.TicketPriority.Name)">@ticket.TicketPriority.Name </span></td>
+                                                <td class="text-center"><span class="badge @BadgeService.GetPriorityBadge(ticket.TicketPriority.Name)">@ticket.TicketPriority.Name </span></td>
                                                 <td>@ticket.Created.ToString("MM-dd-yyyy")</td>
-                                                <td>
-                                                    <a asp-action="Details" asp-route-id="@ticket.Id" class="bs-tooltip" data-toggle="tooltip" data-placement="left" title="" data-original-title="Details"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg></a>
+                                                <td class="text-center">
+                                                    <a asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id" class="bs-tooltip" data-toggle="tooltip" data-placement="left" title="" data-original-title="Details"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg></a>
                                                     @if (ticket.DeveloperUserId == psUser.Id || ticket.OwnerUserId == psUser.Id || (projectManager?.Id == psUser.Id) || User.IsInRole(nameof(Roles.Admin)))
                                                     {
-                                                        <a asp-action="Edit" asp-route-id="@ticket.Id" class="bs-tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 p-1 br-6 mb-1"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg></a>
+                                                        <a asp-action="Edit" asp-controller="Tickets" asp-route-id="@ticket.Id" class="bs-tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 p-1 br-6 mb-1"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg></a>
                                                     }
 
                                                     @if (ticket.Archived)
                                                     {
-                                                        <a asp-action="Restore" asp-route-id="@ticket.Id" class="bs-tooltip" data-toggle="tooltip" data-placement="right" title="Restore"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-corner-up-left"><polyline points="9 14 4 9 9 4" /><path d="M20 20v-7a4 4 0 0 0-4-4H4" /></svg></a>
+                                                        <a asp-action="Restore" asp-controller="Tickets" asp-route-id="@ticket.Id" class="bs-tooltip" data-toggle="tooltip" data-placement="right" title="Restore"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-corner-up-left"><polyline points="9 14 4 9 9 4" /><path d="M20 20v-7a4 4 0 0 0-4-4H4" /></svg></a>
                                                     }
                                                     else
                                                     {
-                                                        <a asp-action="Archive" asp-route-id="@ticket.Id" class="bs-tooltip" data-toggle="tooltip" data-placement="right" title="Archive"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-archive"><polyline points="21 8 21 21 3 21 3 8" /><rect x="1" y="3" width="22" height="5" /><line x1="10" y1="12" x2="14" y2="12" /></svg></a>
+                                                        <a asp-action="Archive" asp-controller="Tickets" asp-route-id="@ticket.Id" class="bs-tooltip" data-toggle="tooltip" data-placement="right" title="Archive"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-archive"><polyline points="21 8 21 21 3 21 3 8" /><rect x="1" y="3" width="22" height="5" /><line x1="10" y1="12" x2="14" y2="12" /></svg></a>
                                                     }
                                                 </td>
                                             </tr>
@@ -206,7 +206,7 @@
                 <div class="card m-1 p-2">
                     <div class="header">
                     </div>
-                    <div class="body" style="overflow-y:auto;height:500px;">
+                    <div class="body justify-content-center" style="overflow-y:auto;height:500px;">
                         <h2>Project Manager</h2>
                         <hr />
                         @if (projectManager != null)
@@ -218,7 +218,7 @@
                                 }
                                 else
                                 {
-                                    <img class="rounded-circle" style="width:60px;height:60px" src="/img/avatardefault_92824.png" alt="" />
+                                    <img class="rounded-circle" style="width:80px;height:80px" src="/img/avatardefault_92824.png" alt="" />
 
                                 }
 
@@ -313,114 +313,54 @@
                     <div class="body" style="overflow-y:auto;height:500px;">
                         <h2>Project Activity</h2>
                         <hr />
-                         <div class="widget-content">
 
-                                <div class="w-shadow-top"></div>
+                        <div class="widget-content">
 
-                                <div class="mt-container mx-auto">
-                                    <div class="timeline-line">
-                                        
+                            <div class="w-shadow-top"></div>
+
+                            <div class="mt-container mx-auto">
+                                <div class="timeline-line">
+
+                                    @*foreach loop starts here*@
+                                    @foreach (TicketHistory history in await HistoryService.GetProjectTicketsHistoriesAsync(Model.Id, psUser.CompanyId))
+                                    {
+                                        string fonticon = BadgeService.GetFonticonByHistory(history.Property);
+                                        string tColor = BadgeService.GetFunticonColorByHistory(history.Property);
+
+                                        @* Project Activity loop *@
                                         <div class="item-timeline timeline-new">
                                             <div class="t-dot">
-                                                <div class="t-secondary"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></div>
+                                                <div class="@tColor">
+                                                    @Html.Raw(fonticon)
+                                                </div>
                                             </div>
                                             <div class="t-content">
                                                 <div class="t-uppercontent">
-                                                    <h5>New project created : <a href="javscript:void(0);"><span>[Cork Admin Template]</span></a></h5>
+                                                    <h5>@history.Ticket.Title</h5>
+                                                    <h5>@history.Description</h5>
+                                                    <span>By: <a href="" title="@history.User.FullName">@history.User.FullName</a></span>
                                                 </div>
-                                                <p>27 Feb, 2020</p>
+                                                <p> <span class="date">@history.Created.ToString()</span></p>
+                                                <div>
+                                                    <p>This ticket <b>@history.Property</b> was edited</p>
+                                                    <p>@($"Previous {history.Property}: {history.OldValue}")</p>
+                                                    <p>@($"Current {history.Property}: {history.NewValue}")</p>
+                                                </div>
+
+                                            </div>
+                                            <div class="media">
+                                                <div class="media-body">
+                                                    <h6 class="mb-0"></h6>
+                                                </div>
                                             </div>
                                         </div>
 
-                                        <div class="item-timeline timeline-new">
-                                            <div class="t-dot">
-                                                <div class="t-success"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></div>
-                                            </div>
-                                            <div class="t-content">
-                                                <div class="t-uppercontent">
-                                                    <h5>Mail sent to <a href="javascript:void(0);">HR</a> and <a href="javascript:void(0);">Admin</a></h5>
-                                                </div>
-                                                <p>28 Feb, 2020</p>
-                                            </div>
-                                        </div>
-
-                                        <div class="item-timeline timeline-new">
-                                            <div class="t-dot">
-                                                <div class="t-primary"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-                                            </div>
-                                            <div class="t-content">
-                                                <div class="t-uppercontent">
-                                                    <h5>Server Logs Updated</h5>
-                                                </div>
-                                                <p>27 Feb, 2020</p>
-                                            </div>
-                                        </div>
-
-                                        <div class="item-timeline timeline-new">
-                                            <div class="t-dot">
-                                                <div class="t-danger"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-                                            </div>
-                                            <div class="t-content">
-                                                <div class="t-uppercontent">
-                                                    <h5>Task Completed : <a href="javscript:void(0);"><span>[Backup Files EOD]</span></a></h5>
-                                                </div>
-                                                <p>01 Mar, 2020</p>
-                                            </div>
-                                        </div>
-
-                                        <div class="item-timeline timeline-new">
-                                            <div class="t-dot">
-                                                <div class="t-warning"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg></div>
-                                            </div>
-                                            <div class="t-content">
-                                                <div class="t-uppercontent">
-                                                    <h5>Documents Submitted from <a href="javascript:void(0);">Sara</a></h5>
-                                                    <span class=""></span>
-                                                </div>
-                                                <p>10 Mar, 2020</p>
-                                            </div>
-                                        </div>
-
-                                        <div class="item-timeline timeline-new">
-                                            <div class="t-dot">
-                                                <div class="t-dark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-server"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6" y2="6"></line><line x1="6" y1="18" x2="6" y2="18"></line></svg></div>
-                                            </div>
-                                            <div class="t-content">
-                                                <div class="t-uppercontent">
-                                                    <h5>Server rebooted successfully</h5>
-                                                    <span class=""></span>
-                                                </div>
-                                                <p>06 Apr, 2020</p>
-                                            </div>
-                                        </div>                                      
-                                    </div>                                    
+                                    }
                                 </div>
-
-                                <div class="w-shadow-bottom"></div>
                             </div>
 
-                        @* Project Activity loop *@
-                        @foreach (TicketHistory history in await HistoryService.GetProjectTicketsHistoriesAsync(Model.Id, psUser.CompanyId))
-                        {
-                            <div>
-                                <span class="date">@history.Created.ToString()</span>
-                                <h6>@history.Description</h6>
-                                <span>By: <a href="" title="@history.User.FullName">@history.User.FullName</a></span>
-                                <div>
-                                    <p>This ticket <b>@history.Property</b> was edited</p>
-                                    <p>@($"Previous {history.Property}: {history.OldValue}")</p>
-                                    <p>@($"Current {history.Property}: {history.NewValue}")</p>
-                                </div>
-                                <div class="media">
-                                    <div class="media-body">
-                                        <h6 class="mb-0"></h6>
-                                    </div>
-                                </div>
-
-                            </div>
-
-
-                        }
+                            <div class="w-shadow-bottom"></div>
+                        </div>
 
                     </div>
 
