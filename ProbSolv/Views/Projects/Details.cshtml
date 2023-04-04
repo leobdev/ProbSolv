@@ -93,7 +93,7 @@
                                         Status:
                                     </dt>
                                     <dd class="col-8">
-                                        <span style="float:right;" class="btn btn-outline-dark justify-content-end">Active</span>
+                                        <span style="float:right;" class="btn btn-outline-success justify-content-end">Active</span>
                                     </dd>
                                 }
                                 else
@@ -129,11 +129,11 @@
                                         <tr>
                                             @* Table header *@
                                             <th>Title</th>
-                                            <th>Developer</th>
-                                            <th>Status</th>
-                                            <th>Priority</th>
-                                            <th>Date</th>
-                                            <th>Action</th>
+                                            <th class="text-center">Developer</th>
+                                            <th class="text-center">Status</th>
+                                            <th class="text-center">Priority</th>
+                                            <th class="text-center">Date</th>
+                                            <th class="text-center">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -141,8 +141,8 @@
                                         @foreach (var ticket in Model.Tickets.OrderByDescending(d => d.Created))
                                         {
                                             <tr>
-                                                <td><a asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id" style="color:black"><strong>@ticket.Title</strong></a> </td>
-                                                <td>
+                                                <td class="text-center"><a asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id" style="color:black"><strong>@ticket.Title</strong></a> </td>
+                                                <td class="text-center">
                                                     @if (ticket.DeveloperUserId != null)
                                                     {
                                                         @ticket.DeveloperUser?.FullName
@@ -158,12 +158,12 @@
                                                 </td>
                                                 @if (ticket.TicketStatus.Name == "New")
                                                 {
-                                                    <td><span class="btn btn-outline-success">@ticket.TicketStatus.Name </span></td>
+                                                    <td class="text-center"><span class="btn btn-outline-success">@ticket.TicketStatus.Name </span></td>
 
                                                 }
                                                 else
                                                 {
-                                                    <td><span class="btn btn-outline-primary">@ticket.TicketStatus.Name </span></td>
+                                                    <td class="text-center"><span class="btn btn-outline-primary">@ticket.TicketStatus.Name </span></td>
                                                 }
                                                 <td class="text-center"><span class="badge @StatusService.GetPriorityBadge(ticket.TicketPriority.Name)">@ticket.TicketPriority.Name </span></td>
                                                 <td>@ticket.Created.ToString("MM-dd-yyyy")</td>
@@ -206,7 +206,7 @@
                 <div class="card m-1 p-2">
                     <div class="header">
                     </div>
-                    <div class="body" style="overflow-y:auto;height:300px;">
+                    <div class="body" style="overflow-y:auto;height:500px;">
                         <h2>Project Manager</h2>
                         <hr />
                         @if (projectManager != null)
@@ -224,11 +224,12 @@
 
                                 <div>
                                     <h5>@projectManager.FullName</h5>
-                                    <span>@projectManager.Email</span>
-                                    <p class="text-muted m-b-0">Project Manager</p>
+                                    <p class=""><strong>Project Manager</strong></p>
+                                    <p><span>@projectManager.Email</span></p>
+                                    <br>
                                     @if (User.IsInRole(nameof(Roles.Admin)) || (psUser.Id == projectManager.Id))
                                     {
-                                        <a class="btn btn-xs alert-primary" style="font:small" asp-action="AssignMembers" asp-controller="Projects" asp-route-projectId="@Model.Id"> Assign User</a>
+                                        <a class="btn btn-sx btn-outline-info" style="font:small" asp-action="AssignMembers" asp-controller="Projects" asp-route-projectId="@Model.Id"> Assign User</a>
                                     }
 
                                 </div>
@@ -244,7 +245,7 @@
                                     <h5 class="text-muted m-b-0">Not Assigned</h5>
                                     @if (User.IsInRole(nameof(Roles.Admin)))
                                     {
-                                        <span><a asp-action="AssignProjectManager" asp-controller="Home" asp-route-id="@Model.Id" class="btn btn-sx btn-outline-info">Assign PM</a></span>
+                                        <span><a asp-action="AssignPM" asp-controller="Projects" asp-route-projectId="@Model.Id" class="btn btn-sx btn-outline-info">Assign PM</a></span>
                                     }
                                 </div>
 
@@ -264,10 +265,10 @@
 
             <div class="col-xl-4 col-lg-4 col-sm-12">
 
-                <div class="card ">
+                <div class="card  m-1 p-2">
                     <div class="header">
                     </div>
-                    <div class="body" style="overflow-y:auto;height:300px;">
+                    <div class="body" style="overflow-y:auto;height:500px;">
                         <h2>Project Team</h2>
                         <hr />
                         <ul class="right_chat list-unstyled mb-0">
@@ -304,14 +305,100 @@
 
                 </div>
             </div>
-            <div class="col-xl-4 col-lg-4 col-sm-12">
+            <div class="col-xl-4 col-lg-4 col-sm-12 layout-spacing">
 
-                <div class="card">
+                <div class="card  m-1 p-2 widget widget-activity-five">
                     <div class="header">
                     </div>
-                    <div class="body" style="overflow-y:auto;height:300px;">
+                    <div class="body" style="overflow-y:auto;height:500px;">
                         <h2>Project Activity</h2>
                         <hr />
+                         <div class="widget-content">
+
+                                <div class="w-shadow-top"></div>
+
+                                <div class="mt-container mx-auto">
+                                    <div class="timeline-line">
+                                        
+                                        <div class="item-timeline timeline-new">
+                                            <div class="t-dot">
+                                                <div class="t-secondary"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></div>
+                                            </div>
+                                            <div class="t-content">
+                                                <div class="t-uppercontent">
+                                                    <h5>New project created : <a href="javscript:void(0);"><span>[Cork Admin Template]</span></a></h5>
+                                                </div>
+                                                <p>27 Feb, 2020</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="item-timeline timeline-new">
+                                            <div class="t-dot">
+                                                <div class="t-success"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></div>
+                                            </div>
+                                            <div class="t-content">
+                                                <div class="t-uppercontent">
+                                                    <h5>Mail sent to <a href="javascript:void(0);">HR</a> and <a href="javascript:void(0);">Admin</a></h5>
+                                                </div>
+                                                <p>28 Feb, 2020</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="item-timeline timeline-new">
+                                            <div class="t-dot">
+                                                <div class="t-primary"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                            </div>
+                                            <div class="t-content">
+                                                <div class="t-uppercontent">
+                                                    <h5>Server Logs Updated</h5>
+                                                </div>
+                                                <p>27 Feb, 2020</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="item-timeline timeline-new">
+                                            <div class="t-dot">
+                                                <div class="t-danger"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                            </div>
+                                            <div class="t-content">
+                                                <div class="t-uppercontent">
+                                                    <h5>Task Completed : <a href="javscript:void(0);"><span>[Backup Files EOD]</span></a></h5>
+                                                </div>
+                                                <p>01 Mar, 2020</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="item-timeline timeline-new">
+                                            <div class="t-dot">
+                                                <div class="t-warning"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg></div>
+                                            </div>
+                                            <div class="t-content">
+                                                <div class="t-uppercontent">
+                                                    <h5>Documents Submitted from <a href="javascript:void(0);">Sara</a></h5>
+                                                    <span class=""></span>
+                                                </div>
+                                                <p>10 Mar, 2020</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="item-timeline timeline-new">
+                                            <div class="t-dot">
+                                                <div class="t-dark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-server"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6" y2="6"></line><line x1="6" y1="18" x2="6" y2="18"></line></svg></div>
+                                            </div>
+                                            <div class="t-content">
+                                                <div class="t-uppercontent">
+                                                    <h5>Server rebooted successfully</h5>
+                                                    <span class=""></span>
+                                                </div>
+                                                <p>06 Apr, 2020</p>
+                                            </div>
+                                        </div>                                      
+                                    </div>                                    
+                                </div>
+
+                                <div class="w-shadow-bottom"></div>
+                            </div>
+
                         @* Project Activity loop *@
                         @foreach (TicketHistory history in await HistoryService.GetProjectTicketsHistoriesAsync(Model.Id, psUser.CompanyId))
                         {
@@ -338,8 +425,8 @@
                     </div>
 
                 </div>
-
             </div>
+
 
         </div>
     </div>
