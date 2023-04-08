@@ -1,0 +1,54 @@
+﻿@model IEnumerable<ProbSolv.Models.Project>
+
+@{
+    ViewData["Title"] = "Manage Projects";
+    
+
+}
+
+
+<div class="container">
+    <div class="row">
+        <div class="card-columns">
+
+        @foreach (var project in Model)
+        {
+
+                <div class="card">
+                    <div class="col">
+                        <div class="row">
+                            <div class="col">
+                                @if (project.ImageFileData is not null)
+                                {
+                                    <img id="imageFileData" class="img-fluid" style="height:300px;width:300px" src="data:image/*;base64,@(Convert.ToBase64String(project.ImageFileData))" />
+                                }
+                                else
+                                {
+                                    <img id="imageFileData" class="img-fluid" style="height:300px;width:300px" src="/img/project-generic.jpg" />
+                                }
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <a class="btn btn-dark btn-block btn-sm" asp-controller="Projects" asp-action="Details" asp-route-id="@project.Id">See Details</a>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="col">
+                        <a href="post.html">
+                            <h6 class=""><strong>@project.Name</strong></h6>
+                            <p class="">@project.Description</p>
+                        </a>
+                        
+                    </div>
+                </div>
+           
+            <hr />
+        }
+        </div>
+        <!-- Pager-->
+    </div>
+</div>
+
+

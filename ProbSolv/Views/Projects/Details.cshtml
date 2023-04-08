@@ -87,7 +87,7 @@
                                     <span style="float:right;" class="badge @BadgeService.GetPriorityBadge(Model.ProjectPriority.Name) justify-content-end">@Model.ProjectPriority?.Name</span>
                                 </dd>
 
-                                @if (today < end && today >= start)
+                                @if ((today < end && today >= start) && Model.Archived is false)
                                 {
                                     <dt class="col-4">
                                         Status:

@@ -21,7 +21,7 @@
 
                     @if (Model.ImageFileData is not null)
                     {
-                        <img id="imageFileData" class="img-fluid" style="width:300px;height:100px" src="data:image/*;base64,@(Convert.ToBase64String(Model.ImageFileData))" />
+                        <img id="imageFileData" class="img-fluid" style="width:fit-content; max-width:300px;" src="data:image/*;base64,@(Convert.ToBase64String(Model.ImageFileData))" />
                     }
                     else
                     {

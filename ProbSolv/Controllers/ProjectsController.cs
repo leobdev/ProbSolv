@@ -77,6 +77,29 @@ namespace ProbSolv.Controllers
             return View(projects);
         }
 
+        public async Task<IActionResult> ProjectsGrid()
+        {
+
+            int companyId = User.Identity.GetCompanyId().Value;
+
+            string userId = _userManager.GetUserId(User);
+
+            List<Project> projects = new();
+
+            if (User.IsInRole(nameof(Roles.Admin)) || User.IsInRole(nameof(Roles.ProjectManager)))
+            {
+
+                projects = await _companyInfoService.GetAllProjectsAsync(companyId);
+            }
+            else
+            {
+                projects = await _projectService.GetAllProjectsByCompanyAsync(companyId);
+
+            }
+
+            return View(projects);
+        }
+
 
         public async Task<IActionResult> ArchivedProjects()
         {
