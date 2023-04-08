@@ -10,5 +10,7 @@ namespace ProbSolv.Services.Interfaces
 
         public string GetFunticonColorByHistory(string historyProperty);
 
+        public string GetPriorityColor(string priorityName);
+
     }
 }

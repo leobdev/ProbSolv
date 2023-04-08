@@ -90,7 +90,7 @@
                                         </span>
                                     </td>
                                     <td class="text-center">
-                                        <a asp-action="Details" asp-route-id="@item.Id" class="bs-tooltip" data-toggle="tooltip" data-placement="left" title="" data-original-title="Details"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg></a>
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="bs-tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="Details"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg></a>
 
                                         @{
                                             bool isProjectPM = (await ProjectService.GetProjectManagerAsync(item.Id))?.Id == psUser.Id;
@@ -102,11 +102,11 @@
 
                                             @if (item.Archived)
                                             {
-                                                <a asp-action="Restore" asp-route-id="@item.Id" class="bs-tooltip" data-toggle="tooltip" data-placement="right" title="Restore"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-corner-up-left"><polyline points="9 14 4 9 9 4" /><path d="M20 20v-7a4 4 0 0 0-4-4H4" /></svg></a>
+                                                <a asp-action="Restore" asp-route-id="@item.Id" class="bs-tooltip" data-toggle="tooltip" data-placement="top" title="Restore"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-corner-up-left"><polyline points="9 14 4 9 9 4" /><path d="M20 20v-7a4 4 0 0 0-4-4H4" /></svg></a>
                                             }
                                             else
                                             {
-                                                <a asp-action="Archive" asp-route-id="@item.Id" class="bs-tooltip" data-toggle="tooltip" data-placement="right" title="Archive"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-archive"><polyline points="21 8 21 21 3 21 3 8" /><rect x="1" y="3" width="22" height="5" /><line x1="10" y1="12" x2="14" y2="12" /></svg></a>
+                                                <a asp-action="Archive" asp-route-id="@item.Id" class="bs-tooltip" data-toggle="tooltip" data-placement="top" title="Archive"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-archive"><polyline points="21 8 21 21 3 21 3 8" /><rect x="1" y="3" width="22" height="5" /><line x1="10" y1="12" x2="14" y2="12" /></svg></a>
                                             }
                                         }
                                     </td>

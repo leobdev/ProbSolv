@@ -84,7 +84,7 @@
                                 </dt>
 
                                 <dd class="col-8">
-                                    <span style="float:right;" class="btn btn-outline-dark justify-content-end">@Model.ProjectPriority?.Name</span>
+                                    <span style="float:right;" class="badge @BadgeService.GetPriorityBadge(Model.ProjectPriority.Name) justify-content-end">@Model.ProjectPriority?.Name</span>
                                 </dd>
 
                                 @if (today < end && today >= start)

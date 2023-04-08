@@ -159,7 +159,33 @@ namespace ProbSolv.Services
         }
 
 
+        public string GetPriorityColor(string priorityName)
+        {
+            //Low
+            //Medium
+            //High
+            //Urgent
 
+            if (priorityName == PSProjectPriority.Low.ToString() || priorityName == PSTicketPriority.Low.ToString())
+            {
+                return "btn-success";
+            }
+
+            if (priorityName == PSProjectPriority.Medium.ToString() || priorityName == PSTicketPriority.Medium.ToString())
+            {
+                return "btn-secondary";
+            }
+
+            if (priorityName == PSProjectPriority.High.ToString() || priorityName == PSTicketPriority.High.ToString())
+            {
+                return "btn-warning";
+            }
+
+
+            return "btn-danger";
+
+
+        }
 
 
     }
