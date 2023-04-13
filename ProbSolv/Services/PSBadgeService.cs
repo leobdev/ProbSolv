@@ -144,16 +144,16 @@ namespace ProbSolv.Services
 
             if (priorityName == PSProjectPriority.Medium.ToString() || priorityName == PSTicketPriority.Medium.ToString())
             {
-                return "bg-secondary";
+                return "bg-warning";
             }
 
             if (priorityName == PSProjectPriority.High.ToString() || priorityName == PSTicketPriority.High.ToString())
             {
-                return "bg-warning";
+                return "bg-danger";
             }
 
 
-            return "bg-danger";
+            return "bg-dark ";
 
 
         }
@@ -183,6 +183,34 @@ namespace ProbSolv.Services
 
 
             return "btn-danger";
+
+
+        }
+
+        public string GetStatusBadge(string statusName)
+        {
+                //New,
+                //Development,
+                //Testing,
+                //Resolved
+
+            if (statusName == PSTicketStatus.New.ToString())
+            {
+                return "btn-outline-success";
+            }
+
+            if (statusName == PSTicketStatus.Development.ToString())
+            {
+                return "btn-outline-primary";
+            }
+
+            if (statusName == PSTicketStatus.Testing.ToString())
+            {
+                return "btn-outline-warning";
+            }
+
+
+            return "btn-outline-dark";
 
 
         }

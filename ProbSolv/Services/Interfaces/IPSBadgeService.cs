@@ -12,5 +12,7 @@ namespace ProbSolv.Services.Interfaces
 
         public string GetPriorityColor(string priorityName);
 
+        public string GetStatusBadge(string statusName);        
+
     }
 }

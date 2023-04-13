@@ -1,21 +1,36 @@
 ﻿@model ProbSolv.Models.ViewModels.AssignDeveloperViewModel
+@using ProbSolv.Services.Interfaces
+@using Microsoft.AspNetCore.Identity
+@using ProbSolv.Models.Enums
 
-<div class="container">
-    <h2>Assign Developer for</h2>
-    <div class="row">
-        <div class="col-md-6">
-            <h3>@Model.Ticket.Title</h3>
-            <a style="font-size:small" asp-action="Details" asp-controller="Projects" asp-route-id="@Model.Ticket.ProjectId">
-                @Model.Ticket.Project.Name
-            </a>
-            <div class="card">
-                <div class="card-header"></div>
-                <label class="control-label">Assign Developer</label>
-            </div>
-            <div class="card-body">
+@inject IPSBadgeService BadgeService
+@inject IPSProjectService ProjectService
+@inject UserManager<PSUser> UserManager
+@inject IPSTicketService TicketService
+
+
+
+
+<div class="container-fluid">
+    <h2>Ticket Assigment</h2>
+
+
+    <div class="row mb-3">
+
+
+        <div class="card md-3 statbox widget box box-shadow col-xl-6 col-lg-6 col-sm-12 layout-spacing">
+            <div class=" col widget-content widget-content-area">
+
+
+                <h6 class="control-label">Select Developers</h6>
+
+                <h5>
+
+                    @Model.Ticket.Project.Name
+                </h5>
+
                 <form method="post" asp-action="AssignDeveloper" asp-controller="Tickets">
                     <input asp-for="Ticket.Id" hidden />
-                    <p>Description: @Model.Ticket.Description</p>
 
                     <div class="form-group">
                         <label class="col-form-label">Select Developers</label>
@@ -28,15 +43,166 @@
                         <input type="submit" value="Assign" class="btn btn-primary" />
                     </div>
                 </form>
+            </div>
+        </div>
+        <br />
+
+
+        <div class="card ml-3 statbox offset widget box box-shadow col-xl-4 col-lg-4 col-sm-12 layout-spacing">
+
+
+            <h5>@Model.Ticket.Title</h5>
+            <p>@Model.Ticket.Description</p>
+
+            <div class="card-body">
+                <div class="progress-container progress-info m-b-25">
+                    <br />
+                    <span class="progress-badge" style="font-size:small"><strong>Project Status</strong></span>
+                    <div class="progress">
+                        @* Razor code block *@
+                        @{
+                            var start = Model.Ticket.Project.StartDate.DateTime;
+                            var end = Model.Ticket.Project.EndDate.DateTime;
+                            var today = DateTime.Now;
+                            var percent = today >= end ? 100 : today < start ? 0 : Math.Round((today.Subtract(start)) / (end.Subtract(start)) * 100);
+                        }
+
+                        <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: @percent%;">
+                            @* Use Progress Bar code variable here *@
+                            <span class="progress-value">@percent%</span>
+                        </div>
+                    </div>
+                    <p>Project: <strong>@Model.Ticket.Project.Name</strong></p>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+
+
+        <div class="card statbox widget box box-shadow col-xl-6 col-lg-6 col-sm-12 layout-spacing">
+            <div class="row">
+
+                <h5>Current Developer</h5>
+            </div>
+
+            <br />
+
+            @{
+                var dev = await TicketService.GetTicketDeveloperAsync(Model.Ticket.Id, Model.Ticket.Project.CompanyId.Value);
+            }
+
+
+
+            <div class="row">
+                @if (dev.Projects is not null)
+                {
+                    <div class="col-3 offset-3">
+
+
+
+                        @if (dev.AvatarFileData != null)
+                        {
+                            <img class="rounded-circle align-content-center" src="data/image/*;base64,@Convert.ToBase64String(dev.AvatarFileData)" alt="" />
+                        }
+                        else
+                        {
+                            <img class="rounded-circle" style="width:160px;height:160px" src="/img/avatardefault_92824.png" alt="" />
+
+                        }
+
+                        
+
+
+
+                    </div>
+
+                    <div class="col">
+                        @if (dev.Projects is not null)
+                        {
+                            <h4>
+                                @dev.FullName
+                            </h4>
+                           
+                            <hr />
+                            <p>@dev.Email</p>
+
+                        }
+
+
+                    </div>
+
+                }
+                else
+                {
+                    <h6>No developer has been assigned.</h6>
+                }
+
+
 
             </div>
 
         </div>
+        <br />
+
+
+        <div class="card statbox ml-3 widget box box-shadow col-xl-4 col-lg-4 col-sm-12 layout-spacing">
+            <div class="widget-content widget-content-area">
+
+                <dl class="row">
+
+                    <dd class="col-4">
+
+                        Created:
+                    </dd>
+
+                    <dt class="col-8">
+                        <span style="float:right;" class="btn btn-sm btn-outline-dark">@Model.Ticket.Created.ToString("dd MMM, yyyy") </span>
+                    </dt>
+                </dl>
+                <dl class="row">
+                    <dd class="col-4">
+                        Project Deadline:
+                    </dd>
+
+                    <dt class="col-8">
+                        <span style="float:right;" class="btn btn-sm btn-outline-dark justify-content-end">@Model.Ticket.Project.EndDate.ToString("dd MMM, yyyy")</span>
+
+                    </dt>
+                </dl>
+                <dl class="row">
+                    <dd class="col-4">
+                        Priority:
+                    </dd>
+
+                    <dt class="col-8">
+                        <span style="float:right;" class="badge @BadgeService.GetPriorityBadge(Model.Ticket.TicketPriority.Name) justify-content-end">@Model.Ticket.TicketPriority?.Name</span>
+                    </dt>
+                </dl>
+                <dl class="row">
+                    <dd class="col-4">
+                        Status:
+                    </dd>
+
+                    <dt class="col-8">
+                        <span style="float:right;" class="badge @BadgeService.GetStatusBadge(Model.Ticket.TicketStatus.Name) justify-content-end">@Model.Ticket.TicketStatus?.Name</span>
+                    </dt>
+                </dl>
+
+            </div>
+
+
+        </div>
+
 
     </div>
-    <div>
-        <a asp-action="UnassignedTickets" asp-controller="Tickets">Unassigned Tickets</a>
-    </div>
-
+    <br />
+    <a asp-action="AllTickets" asp-controller="Tickets" class="btn btn-outline-dark">Back to List</a>
 
 </div>
+
+
+

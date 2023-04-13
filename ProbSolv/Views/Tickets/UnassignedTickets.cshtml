@@ -1,17 +1,24 @@
 ﻿@model IEnumerable<ProbSolv.Models.Ticket>
 @using ProbSolv.Models.Enums
+@using ProbSolv.Services.Interfaces
+
+@inject IPSBadgeService BadgeService
 
 
-<div class="col-md-12 col">
-    <div class="mt-5 bg-secondary">
-        <div class="card m-1 p-2">
-            <div class="header">
-                <h2>Unassigned Tickets</h2>
-            </div>
-            <div class="body">
-                <div class="table-responsive" style="overflow-y:auto;height:600px;">
-                    <table class="table table-hover">
-                        <thead class="">
+
+
+<div class="container-fluid">
+
+    <h1>Unassigned Tickets</h1>
+
+    <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+
+            <div class="statbox widget box box-shadow">
+                <div class="widget-content widget-content-area">
+
+                    <table id="style-3" class="table style-3  table-hover" style="width:100%">
+                        <thead>
                             <tr>
                                 @* Table header *@
                                 <th>Title</th>
@@ -42,19 +49,14 @@
 
                                         }
                                     </td>
-                                    @if (ticket.TicketStatus.Name == "New")
-                                    {
-                                        <td><span class="badge-success">@ticket.TicketStatus.Name </span></td>
 
-                                    }
-                                    else
-                                    {
-                                        <td><span class="badge-primary">@ticket.TicketStatus.Name </span></td>
-                                    }
-                                    <td><span class="badge-warning">@ticket.TicketPriority.Name </span></td>
+                                    <td><span class="badge @BadgeService.GetStatusBadge(ticket.TicketStatus.Name)">@ticket.TicketStatus.Name </span></td>
+
+
+                                    <td><span class="badge @BadgeService.GetPriorityBadge(ticket.TicketPriority.Name)">@ticket.TicketPriority.Name </span></td>
                                     <td>@ticket.Created.ToString("MM-dd-yyyy")</td>
                                     <td>
-                                        <a class="btn btn-sm btn-outline-info" asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id"><i class="fs-5 bi-justify"></i></a>
+                                        <a asp-action="Details" asp-route-id="@ticket.Id" class="bs-tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="Details"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg></a>
                                     </td>
                                 </tr>
                             }
@@ -67,3 +69,26 @@
 
     </div>
 </div>
+
+@section scripts{
+
+    <script>
+        $('#style-3').DataTable({
+            "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
+                "<'table-responsive'tr>" +
+                "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
+            "oLanguage": {
+                "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
+                "sInfo": "Showing page _PAGE_ of _PAGES_",
+                "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                "sSearchPlaceholder": "Search...",
+                "sLengthMenu": "Results :  _MENU_",
+            },
+            "stripeClasses": [],
+            "lengthMenu": [5, 10, 20, 50],
+            "pageLength": 10
+        });
+
+    </script>
+
+}

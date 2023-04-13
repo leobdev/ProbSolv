@@ -274,14 +274,14 @@ namespace ProbSolv.Services
 
             List<PSUser> members = new();
 
-            foreach (var user in project.Members)
+
+            foreach (PSUser user in project.Members)
             {
                 if (await _rolesService.IsUserInRoleAsync(user, role))
                 {
                     members.Add(user);
                 }
             }
-
             return members;
         }
 
