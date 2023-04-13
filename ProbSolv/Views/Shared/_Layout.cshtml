@@ -42,6 +42,16 @@
     <link href="/assets/css/dashboard/dash_1.css" rel="stylesheet" type="text/css" />
 
 
+    <link rel="stylesheet" type="text/css" href="/plugins/editors/quill/quill.snow.css">
+    <link rel="stylesheet" type="text/css" href="~/assets/css/forms/theme-checkbox-radio.css">
+    <link href="/assets/css/apps/mailbox.css" rel="stylesheet" type="text/css" />
+
+    <script src="/plugins/sweetalerts/promise-polyfill.js"></script>
+    <link href="/plugins/sweetalerts/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+    <link href="/plugins/sweetalerts/sweetalert.css" rel="stylesheet" type="text/css" />
+    <link href="/plugins/notification/snackbar/snackbar.min.js" rel="stylesheet" type="text/css" />
+
+
     <link rel="stylesheet" type="text/css" href="/plugins/table/datatable/datatables.css">
     <link rel="stylesheet" type="text/css" href="assets/css/forms/theme-checkbox-radio.css">
     <link rel="stylesheet" type="text/css" href="/plugins/table/datatable/dt-global_style.css">
@@ -221,9 +231,9 @@
                         }
                         else
                         {
-                            <div class="avatar avatar-xl">
-                                <span class="avatar-title rounded-circle">AG</span>
-                            </div>
+
+                            <img src="/img/avatardefault_92824.png" alt="avatar">
+
                         }
                         <h6 class="">@psUser.FullName</h6>
                         <p class="">@role</p>
@@ -508,6 +518,13 @@
             });
         });
     </script>
+
+    <script src="/assets/js/ie11fix/fn.fix-padStart.js"></script>
+    <script src="/plugins/editors/quill/quill.js"></script>
+    <script src="/plugins/sweetalerts/sweetalert2.min.js"></script>
+    <script src="/plugins/notification/snackbar/snackbar.min.js"></script>
+    <script src="/assets/js/apps/custom-mailbox.js"></script>
+
 
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
     @await RenderSectionAsync("Scripts", required: false)
