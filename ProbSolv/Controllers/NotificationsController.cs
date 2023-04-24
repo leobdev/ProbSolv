@@ -8,7 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProbSolv.Data;
+using ProbSolv.Extensions;
 using ProbSolv.Models;
+using ProbSolv.Models.Enums;
+using ProbSolv.Models.ViewModels;
 using ProbSolv.Services.Interfaces;
 
 namespace ProbSolv.Controllers
@@ -19,27 +22,47 @@ namespace ProbSolv.Controllers
         private readonly IEmailSender _emailSender;
         private readonly UserManager<PSUser> _userManager;
         private readonly IPSNotificationService _notificationService;
+        private readonly IPSProjectService _projectService;
+        private readonly IPSRolesService _rolesService;
 
-        public NotificationsController(ApplicationDbContext context, IEmailSender emailSender, UserManager<PSUser> userManager, IPSNotificationService notificationService)
+        public NotificationsController(ApplicationDbContext context, IEmailSender emailSender, UserManager<PSUser> userManager, IPSNotificationService notificationService, IPSProjectService projectService, IPSRolesService rolesService)
         {
             _context = context;
             _emailSender = emailSender;
             _userManager = userManager;
             _notificationService = notificationService;
+            _projectService = projectService;
+            _rolesService = rolesService;
         }
 
         // GET: Notifications
         public async Task<IActionResult> Index()
         {
             PSUser psUser = await _userManager.GetUserAsync(User);
+            var mainRole = await _rolesService.GetUserMainRoleAsync(psUser);
+            int companyId = User.Identity.GetCompanyId().Value;
 
-            //List<Notification> notifications = await _notificationService.GetUserNotificationsAsync(psUser.Id);
+            NotificationViewModel model = new();
 
-            List<Notification> notifications = await _notificationService.GetAllNotificationsAsync();
+            model.Notifications = await _notificationService.GetUserNotificationsAsync(psUser.Id);
+
+
+            if (mainRole == Roles.Admin.ToString())
+            {
+                model.Projects = new SelectList(await _projectService.GetAllProjectsByCompanyAsync(companyId), "Id", "Name");
+            }
+            else
+            {
+                model.Projects = new SelectList(await _projectService.GetUserProjectsAsync(psUser.Id), "Id", "Name");
+            }
+
+            model.RecipientLists = _projectService.get
+
+
 
             //var notifications = await _context.Notifications.ToListAsync();
 
-            return View(notifications);
+            return View(model);
         }
 
         // GET: Notifications/Details/5
@@ -84,7 +107,7 @@ namespace ProbSolv.Controllers
             if (ModelState.IsValid)
             {
 
-                
+
 
                 _context.Add(notification);
                 await _context.SaveChangesAsync();
@@ -188,14 +211,14 @@ namespace ProbSolv.Controllers
             {
                 _context.Notifications.Remove(notification);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool NotificationExists(int id)
         {
-          return _context.Notifications.Any(e => e.Id == id);
+            return _context.Notifications.Any(e => e.Id == id);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿@model IEnumerable<ProbSolv.Models.Notification>
+﻿@model ProbSolv.Models.ViewModels.NotificationViewModel
+@using ProbSolv.Models.ViewModels
 
 @{
     ViewData["Title"] = "Index";
@@ -124,7 +125,7 @@
 
 
                             <!--Begin Message modue to use-->
-                            @foreach (var mail in Model)
+                            @foreach (var mail in Model.Notifications)
                             {
 
                                 <div id="unread-verification-link" class="mail-item mailInbox">
@@ -1001,6 +1002,17 @@
                             <div class="compose-box">
                                 <div class="compose-content">
                                     <form>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="d-flex mb-4 mail-form">
+                                                    <p>From:</p>
+                                                    <select class="" id="m-form" asp-items="@Model.Projects">
+                                                        <option value="info@mail.com">Info &lt;info@mail.com&gt;</option>
+                                                        <option value="shaun@mail.com">Shaun Park &lt;shaun@mail.com&gt;</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="d-flex mb-4 mail-form">

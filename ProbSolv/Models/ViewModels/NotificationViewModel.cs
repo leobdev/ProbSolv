@@ -4,12 +4,12 @@ namespace ProbSolv.Models.ViewModels
 {
     public class NotificationViewModel
     {
-        public PSUser User { get; set; }
+        public List<PSUser> Users { get; set; }
 
-        public SelectList RecipientList { get; set; }
+        public SelectList RecipientLists { get; set; }
 
-        public Notification Notification { get; set; }
+        public List<Notification> Notifications { get; set; }
 
-        public Ticket Ticket { get; set; }
+        public SelectList Projects { get; set; }
     }
 }
