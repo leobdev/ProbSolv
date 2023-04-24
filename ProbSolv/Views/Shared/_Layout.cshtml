@@ -227,13 +227,10 @@
                         @if (psUser.AvatarFileData != null)
                         {
                             <img src="data:image/*;base64,@(Convert.ToBase64String(psUser.AvatarFileData))" class="img-fluid mr-2" alt="avatar">
-
                         }
                         else
                         {
-
                             <img src="/img/avatardefault_92824.png" alt="avatar">
-
                         }
                         <h6 class="">@psUser.FullName</h6>
                         <p class="">@role</p>

@@ -169,5 +169,22 @@ namespace ProbSolv.Services
                 throw;
             }
         }
+
+        public async Task<List<Notification>> GetAllNotificationsAsync()
+        {
+            try
+            {
+                return await _context.Notifications
+                                    .Include(n => n.Ticket)
+                                    .Include(n => n.Sender)
+                                    .Include(n => n.Recipient)
+                                    .ToListAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }

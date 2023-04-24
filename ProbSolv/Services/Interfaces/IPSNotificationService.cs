@@ -20,6 +20,8 @@ namespace ProbSolv.Services.Interfaces
         public Task<List<Notification>> GetUserNotificationsAsync(string userId);
 
         public Task MarkAsNewAsync(Notification notification);
+
+        public Task<List<Notification>> GetAllNotificationsAsync();
         
     }
 }

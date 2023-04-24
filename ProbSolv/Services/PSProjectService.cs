@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using ProbSolv.Data;
 using ProbSolv.Models;
 using ProbSolv.Models.Enums;
 using ProbSolv.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 
 namespace ProbSolv.Services
 {
@@ -11,11 +13,13 @@ namespace ProbSolv.Services
 
         private readonly ApplicationDbContext _context;
         private readonly IPSRolesService _rolesService;
+        private readonly UserManager<PSUser> _userManager;
 
-        public PSProjectService(ApplicationDbContext context, IPSRolesService rolesService)
+        public PSProjectService(ApplicationDbContext context, IPSRolesService rolesService, UserManager<PSUser> userManager)
         {
             _context = context;
             _rolesService = rolesService;
+            _userManager = userManager;
         }
 
         public async Task AddNewProjectAsync(Project project)
@@ -517,5 +521,7 @@ namespace ProbSolv.Services
             _context.Update(project);
             await _context.SaveChangesAsync();
         }
+
+      
     }
 }

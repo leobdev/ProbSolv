@@ -33,7 +33,9 @@ namespace ProbSolv.Controllers
         {
             PSUser psUser = await _userManager.GetUserAsync(User);
 
-            List<Notification> notifications = await _notificationService.GetUserNotificationsAsync(psUser.Id);
+            //List<Notification> notifications = await _notificationService.GetUserNotificationsAsync(psUser.Id);
+
+            List<Notification> notifications = await _notificationService.GetAllNotificationsAsync();
 
             //var notifications = await _context.Notifications.ToListAsync();
 
@@ -81,6 +83,9 @@ namespace ProbSolv.Controllers
         {
             if (ModelState.IsValid)
             {
+
+                
+
                 _context.Add(notification);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

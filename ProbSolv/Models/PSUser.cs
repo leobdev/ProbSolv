@@ -20,6 +20,10 @@ namespace ProbSolv.Models
         public string FullName { get { return $"{FirstName} {LastName}"; } }
 
         [NotMapped]
+        [Display(Name = "Full Name")]
+        public string NameInitials { get { return $"{FirstName[0]} {LastName[0]}"; } }
+
+        [NotMapped]
         [DataType(DataType.Upload)]
         public IFormFile AvatarFormFile { get; set; }
 
