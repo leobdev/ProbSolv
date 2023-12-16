@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.EntityFrameworkCore;
 using ProbSolv.Data;
 using ProbSolv.Extensions;
@@ -56,7 +57,8 @@ namespace ProbSolv.Controllers
                 model.Projects = new SelectList(await _projectService.GetUserProjectsAsync(psUser.Id), "Id", "Name");
             }
 
-            model.RecipientLists = _projectService.get
+            //Fix Later
+            //model.RecipientLists = _projectService.get
 
 
 
