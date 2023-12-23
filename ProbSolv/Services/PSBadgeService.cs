@@ -152,6 +152,11 @@ namespace ProbSolv.Services
                 return "bg-danger";
             }
 
+            if (priorityName == PSProjectPriority.Urgent.ToString() || priorityName == PSTicketPriority.High.ToString())
+            {
+                return "bg-dark ";
+            }
+
 
             return "bg-dark ";
 

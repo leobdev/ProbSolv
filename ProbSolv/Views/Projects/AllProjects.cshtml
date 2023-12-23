@@ -85,7 +85,7 @@
 
                                     </td>
                                     <td class="text-center">
-                                        <span class="badge @StatusService.GetPriorityBadge(item.ProjectPriority.Name ) ">
+                                        <span class="badge @StatusService.GetPriorityBadge(item.ProjectPriority?.Name ) ">
                                             @Html.DisplayFor(modelItem => item.ProjectPriority.Name)
                                         </span>
                                     </td>
