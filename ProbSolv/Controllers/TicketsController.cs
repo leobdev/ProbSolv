@@ -340,7 +340,7 @@ namespace ProbSolv.Controllers
                         throw;
                     }
                 }
-               
+
                 Ticket newTicket = await _ticketService.GetTicketAsnoTrackingAsync(ticket.Id);
                 await _historyService.AddHistoryAsync(oldTicket, newTicket, psUser.Id);
 
@@ -457,6 +457,20 @@ namespace ProbSolv.Controllers
 
             Response.Headers.Add("Content-Disposition", $"inline; filename={fileName}");
             return File(fileData, $"application/{ext}");
+        }
+
+ 
+        public async Task<IActionResult> RemoveAttachment(int? id)
+        {
+            TicketAttachment ticketAttachment = await _ticketService.GetTicketAttachmentByIdAsync(id.Value);
+            if (id is not null)
+            {
+                await _ticketService.RemoveTicketAttachmentAsync(id.Value);
+                
+            }
+
+            return RedirectToAction("Details", new { id = ticketAttachment.TicketId });
+
         }
 
 

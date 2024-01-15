@@ -39,9 +39,9 @@
                                 @*Description of Ticket*@
                                 <h6>@Model.Description</h6>
                                 <br />
-                                <div class="progress-container progress-info m-b-25">
+                                <div class="progress-container progress-info m-b-40">
                                     @*Project Name and information*@
-                                    <span class="progress-badge" style="font-size:medium">Project: @Model.Project.Name</span>
+                                    <span class="progress-badge" style="font-size:small"><strong>Project: @Model.Project.Name</strong></span>
                                     <div class="progress">
                                         @*Progress bar logic*@
                                         @{
@@ -54,7 +54,7 @@
                                         }
 
                                         @*Variable from razor logic*@
-                                        <div class="progress-bar progress-lg" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: [Percent]%;">
+                                        <div class="progress-bar progress-lg" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width:@percent%;">
                                             @*Variable from razor logic*@
                                             <span class="progress-value">@percent%</span>
                                         </div>
@@ -227,7 +227,7 @@
                                         <label class="btn btn-outline-primary btn-sm">
                                             <input name="FormFile" type="file" class="form-control-file" />
                                         </label>
-                                        <button type="submit" class="btn btn-outline-secondary btn-sm md-btn-flat">Submit</button>
+                                        <button type="submit" class="btn btn-outline-primary btn-sm md-btn-flat">Submit</button>
                                     </div>
                                 </form>
                             </div>
@@ -240,7 +240,7 @@
                             <div class="row">
                                 @foreach (TicketAttachment item in Model.Attachments)
                                 {
-                                    <div class="col col-sm-2">
+                                    <div class="col col-sm-3">
                                         <a asp-action="ShowFile" asp-controller="Tickets" asp-route-Id="@item.Id">
                                             <div class="icon">
                                                 <img src="@FileService.GetFileIcon(item.FileName)" style="height:50px;width:50px" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="@item.FileName" />
@@ -251,6 +251,10 @@
                                                 <strong>@item.FileDescription</strong>
                                             </div>
                                             <small>Size: @FileService.FormatFileSize(item.FileData.Length) </small>
+                                        </div>
+                                        <div style="font-size:x-small">
+                                            <a  asp-action="RemoveAttachment" asp-controller="Tickets" asp-route-Id="@item.Id"><small>REMOVE</small></a>
+
                                         </div>
                                     </div>
                                 }

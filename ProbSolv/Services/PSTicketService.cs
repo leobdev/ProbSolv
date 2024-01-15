@@ -529,6 +529,27 @@ namespace ProbSolv.Services
             }
         }
 
+        public async Task RemoveTicketAttachmentAsync(int attachmentId)
+        {
+            try
+            {
+                var attachment = await _context.TicketAttachments.FirstOrDefaultAsync(a => a.Id == attachmentId);
+
+                if (attachment != null)
+                {
+                    _context.Remove(attachment);
+                    _context.SaveChanges();
+
+                }
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         public async Task UpdateTicketAsync(Ticket ticket)
         {
             try
@@ -543,5 +564,7 @@ namespace ProbSolv.Services
                 throw;
             }
         }
+
+
     }
 }
