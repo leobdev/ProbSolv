@@ -9,45 +9,55 @@
 <div id="wrapper">
     <div class="vertical-align-wrap">
         <div class="vertical-align=middle auth-main">
-            <div class="auth-box">
-                <div class="top">
+            <div class="row mb-4">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                    <div class="statbox widget box box-shadow">
+                        <div class="widget-content widget-content-area">
+                            <div class="auth-box">
+                                <div class="top">
+                                </div>
+                                
+                                    <div class="header">
+                                        <h3>
+                                            <span class="clearfix title">
+                                                <span class="number">Welcome</span><br />
+                                                <span>@Model.InviteeFirstName @Model.InviteeLastName</span><br />
 
-                </div>
-                <div class="card">
-                    <div class="header">
-                        <h3>
-                            <span class="clearfix title">
-                                <span class="number">Welcome</span><br />
-                                <span>@Model.InviteeFirstName @Model.InviteeLastName</span><br />
+                                            </span>
+                                        </h3>
+                                    </div>
+                                    <div class="body">
 
-                            </span>
-                        </h3>
-                        <h5><span>@Model.Company.Name Company</span></h5>
-                        <div class="body">
-                            <p>
-                                @Model.Invitor.FullName has invited you to collaborate on the @Model.Project.Name projec.
-                                <br /><br /> Click the "JOIN" button below to register with the company and begin entering tickets.
-                            </p>
-                            <input type="hidden" asp-for="Id" />
-                            <a class="btn btn-primary btn-lg" asp-area="Identity" asp-page="/Account/RegisterByInvite"  name="id" asp-route-id="@Model.Id">Accept Invite</a>
+                                        <h5><span>@Model.Company.Name Company</span></h5>
+                                        <br />
+                                        <div class="body">
+                                            <p>
+                                                @Model.Invitor.FullName has invited you to collaborate on the @Model.Project.Name projec.
+                                                <br /><br /> Click the "JOIN" button below to register with the company and begin entering tickets.
+                                            </p>
+                                            <input type="hidden" asp-for="Id" />
+                                            <a class="btn btn-primary btn-lg" asp-area="Identity" asp-page="/Account/RegisterByInvite" name="id" asp-route-id="@Model.Id">Accept Invite</a>
+                                        </div>
+                                    </div>
+
+
+
+
+                            </div>
+
                         </div>
 
-
                     </div>
-
                 </div>
 
             </div>
 
         </div>
 
+
     </div>
 
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
 
-
-</div>
-
-@section Scripts{
-    <partial name="_ValidationScriptsPartial" />
-
-}
+    }

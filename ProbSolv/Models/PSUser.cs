@@ -20,7 +20,7 @@ namespace ProbSolv.Models
         public string FullName { get { return $"{FirstName} {LastName}"; } }
 
         [NotMapped]
-        [Display(Name = "Full Name")]
+        [Display(Name = "Name Initials")]
         public string NameInitials { get { return $"{FirstName[0]} {LastName[0]}"; } }
 
         [NotMapped]

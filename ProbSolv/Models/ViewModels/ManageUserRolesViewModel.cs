@@ -6,9 +6,13 @@ namespace ProbSolv.Models.ViewModels
     {
         public PSUser PSUser { get; set; }
 
-        public MultiSelectList Roles { get; set; }
+        public SelectList Roles { get; set; }
 
-        public List<string> SelectedRoles { get; set; }
+        public List<string> SelectedRole { get; set; } = new List<string>();
+
+        public string SubmitedRole { get; set; }
+
+        
 
     }
 }
