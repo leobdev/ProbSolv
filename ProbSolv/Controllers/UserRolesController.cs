@@ -27,8 +27,9 @@ namespace ProbSolv.Controllers
             List<UserRolesViewModel> model = new();
             int companyId = User.Identity.GetCompanyId().Value;
             List<PSUser> users = await _companyInfoService.GetAllMembersAsync(companyId);
+            ViewBag.RoleList = new SelectList((await _rolesService.GetRolesAsync()).Select(r => r.Name).ToList(), "Name", "Name");
 
-            foreach(var user in users)
+            foreach (var user in users)
             {
                 UserRolesViewModel vm = new();
 
@@ -36,6 +37,7 @@ namespace ProbSolv.Controllers
 
                 vm.User = user;
                 vm.Roles = roles.ToList();
+                
 
                 model.Add(vm);
             }
@@ -80,7 +82,7 @@ namespace ProbSolv.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ManageUserRoles(string userId, string selectedRole)
+        public async Task<IActionResult> ManageUserRoles(string userId, string role)
         {
             // Get the companyId
             int companyId = User.Identity.GetCompanyId().Value;
@@ -94,7 +96,7 @@ namespace ProbSolv.Controllers
             
 
             //Add user to the new role
-            await _rolesService.AddUserRoleAsync(user, selectedRole);
+            await _rolesService.AddUserRoleAsync(user, role);
 
             //Navigate back to the view
             return RedirectToAction(nameof(ManageUserRoles));
