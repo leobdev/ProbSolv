@@ -1,55 +1,47 @@
-﻿@model IEnumerable<ProbSolv.Models.ViewModels.UserRolesViewModel>
+﻿@model IEnumerable<ManageUserRolesViewModel>
+@using ProbSolv.Models.ViewModels
+@using Microsoft.AspNetCore.Identity
+@using ProbSolv.Services.Interfaces
 
 
 
+@inject UserManager<PSUser> UserManager
+@inject IPSRolesService RolesService
 
     <div class="container-fluid">
 
 
     <h1>Users</h1>
 
+   <form asp-action="ManageUserRoles" asp-controller="UserRoles" method="post">
+
     <div class="row">
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-
             <div class="statbox widget box box-shadow">
                 <div class="widget-content widget-content-area">
-
                     <table id="style-3" class="table style-3  table-hover" style="width:100%">
                         <thead>
                             <tr>
-                                <th >
-                                   Name
-                                </th>
-                                <th>
-                                    Current Role
-                                </th>
-                                <th>
-                                    Manage Role
-                                </th>
-
-                                
-                                
+                                <th>Name</th>
+                                <th>Current Role</th>
+                                <th>New Role</th>
+                                <th>Manage Role</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var item in Model)
                             {
                                 <tr>
+                                    <td>@item.PSUser.FullName</td>
+                                    <td>@(await RolesService.GetUserMainRoleAsync(item.PSUser))</td>
                                     <td>
-                                        @item.User.FullName
-                                    </td>
-                                    <td >
-                                        
-                                        @foreach(var role in item.Roles)
-                                        {
-                                            <a class="btn btn-outline-secondary btn-sm">@role</a>
-                                        }
+                                        <div class="flex flex-wrap gap-2 items-center">
+                                            <select asp-for="@item.SelectedRole" asp-items="@item.Roles"></select>
+                                        </div>
                                     </td>
                                     <td>
-                                       <a data-toggle="modal" data-id="@item.User.Id" data-psuser="@item.User.FullName" data-target="#userRole" asp-action="ManageUserRoles" asp-route-userId="@item.User.Id" class="btn btn-primary">Manage</a>
-                                       
+                                        <button type="submit" class="btn btn-primary">Assign Role</button>
                                     </td>
-                                    
                                 </tr>
                             }
                         </tbody>
@@ -58,6 +50,9 @@
             </div>
         </div>
     </div>
+
+</form>
+
 </div>
 
 @section scripts{
@@ -90,9 +85,8 @@
             // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
             var modal = $(this)
             modal.find('.modal-title').text('New message to ' + user)
-            modal.find('.modal-body select').val(user)
-            modal.find('.modal-header input').val(userId)
-            modal.find('.modal-body select').val(role)
+            modal.find('.modal-body input').val(userId)
+            
         });
 
     </script>
@@ -101,84 +95,8 @@
 
 
 
-<!-- Modal -->
-<div class="modal fade" id="userRole" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-            <input type="hidden" name="userId" value="userId"/>
-                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <svg> ... </svg>
-                </button>
-            </div>
-            <div class="modal-body">
-        <form asp-action="ManageUserRoles" >
-          <div class="form-group">
-            <label for="recipient-name" class="col-form-label">User:</label>
-            <input type="text" class="form-control" id="recipient-name">
-          </div>
-          <div class="form-group">
-            <label for="message-text" class="col-form-label">Message:</label>
-            <select name="role">
-                <option  value="Admin">Admin</option>
-                <option name="role" value="ProjectManager">ProjectManager</option>
-                <option name="role" value="ProjectManager">ProjectManager</option>
-                <option name="role" value="">Developer</option>
-                <option name="role" value="Developer">Submitter</option>
-                <option name="role" value="DemoUser">DemoUser</option>
-            </select>
-          </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Send message</button>
-      </div>
-        </form>
-      </div>
+
+
+
+
            
-        </div>
-    </div>
-</div>
-
-
-
-
-@* <div class="row">
-    <h2 class="m-t-0 h3"><b>Manage Member Roles </b></h2>
-    @foreach (var member in Model)
-    {
-        <div class="row">
-            <div class="card col-4 m-3">
-                <div class="card-body">
-                    <p class="text-muted font-13 m-b-30">
-                        This form displays the current roles assigned to the user: <strong class="text-info">@member.PSUser.FullName</strong>.
-                        Use the dropdown to select the roles this user should be assigned.
-                        Once roles are selected, click "Assign Roles" to submit the form.
-                    </p>
-                    <hr />
-                    <form asp-action="ManageUserRoles" asp-controller="UserRoles" method=post>
-                        <input type="hidden" asp-for="@member.PSUser.Id" />
-                        <div class="row">
-                            <div class="col-6">
-                                <div class="form-group">
-                                    <label asp-for="@member.Roles" class="custom-label"> Roles for @member.PSUser.FullName</label>
-                                    <select asp-for="@member.SelectedRoles" class="form-control" asp-items="@member.Roles" multiple>
-                                    </select>
-                                    <hr />
-                                    <div class="form-group">
-                                        <input type="submit" value="Assign Role" class="btn btn-info" />
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-
-                        </div>
-
-                    </form>
-                </div>
-            </div>
-        </div>
-    }
-</div> *@

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ProbSolv.Extensions;
 using ProbSolv.Models;
+using ProbSolv.Models.Enums;
 using ProbSolv.Models.ViewModels;
 using ProbSolv.Services.Interfaces;
 
@@ -24,20 +25,26 @@ namespace ProbSolv.Controllers
         [HttpGet]
         public async Task<IActionResult> UserRolesIndex()
         {
-            List<UserRolesViewModel> model = new();
+            List<ManageUserRolesViewModel> model = new();
+             
             int companyId = User.Identity.GetCompanyId().Value;
             List<PSUser> users = await _companyInfoService.GetAllMembersAsync(companyId);
-            ViewBag.RoleList = new SelectList((await _rolesService.GetRolesAsync()).Select(r => r.Name).ToList(), "Name", "Name");
+
+            var roles = await _rolesService.GetRolesAsync(); 
+
+           
+
+
 
             foreach (var user in users)
             {
-                UserRolesViewModel vm = new();
 
-                IEnumerable<string> roles = await _rolesService.GetUserRolesAsync(user);
-
-                vm.User = user;
-                vm.Roles = roles.ToList();
-                
+                var selected = await _rolesService.GetUserRolesAsync(user);
+                ManageUserRolesViewModel vm = new ManageUserRolesViewModel()
+                {
+                    PSUser = user,
+                    Roles = new SelectList(roles, "Id", "Name", selected.FirstOrDefault())
+                };            
 
                 model.Add(vm);
             }
@@ -82,13 +89,13 @@ namespace ProbSolv.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ManageUserRoles(string userId, string role)
+        public async Task<IActionResult> ManageUserRoles(ManageUserRolesViewModel model)
         {
             // Get the companyId
             int companyId = User.Identity.GetCompanyId().Value;
 
             //Instantiate the PSUser
-            PSUser user = (await _companyInfoService.GetAllMembersAsync(companyId)).FirstOrDefault(u => u.Id == userId);
+            PSUser user = (await _companyInfoService.GetAllMembersAsync(companyId)).FirstOrDefault(u => u.Id == model.PSUser.Id);
 
             //Get Roles for the user
             //IEnumerable<string> roles = await _rolesService.GetUserRolesAsync(user);
@@ -96,7 +103,7 @@ namespace ProbSolv.Controllers
             
 
             //Add user to the new role
-            await _rolesService.AddUserRoleAsync(user, role);
+            await _rolesService.AddUserRoleAsync(model.PSUser, model.SelectedRole);
 
             //Navigate back to the view
             return RedirectToAction(nameof(ManageUserRoles));

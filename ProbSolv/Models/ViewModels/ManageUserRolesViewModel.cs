@@ -8,11 +8,8 @@ namespace ProbSolv.Models.ViewModels
 
         public SelectList Roles { get; set; }
 
-        public List<string> SelectedRole { get; set; } = new List<string>();
+        public string SelectedRole { get; set; } = string.Empty;
 
-        public string SubmitedRole { get; set; }
-
-        
-
+       
     }
 }
