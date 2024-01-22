@@ -43,7 +43,8 @@ namespace ProbSolv.Controllers
                 ManageUserRolesViewModel vm = new ManageUserRolesViewModel()
                 {
                     PSUser = user,
-                    Roles = new SelectList(roles, "Id", "Name", selected.FirstOrDefault())
+                    Roles = new SelectList(roles, "Id", "Name", selected.FirstOrDefault()),
+                    SelectedRole = selected.FirstOrDefault()
                 };            
 
                 model.Add(vm);
@@ -52,40 +53,7 @@ namespace ProbSolv.Controllers
             return View(model);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> ManageUserRoles()
-        {
-
-            
-            int companyId = User.Identity.GetCompanyId().Value;
-            List<ManageUserRolesViewModel> model = new();
-
-            List<PSUser> users = await _companyInfoService.GetAllMembersAsync(companyId);
-
-
-
-            //Get CompanyId
-
-            //Get all company users
-
-            //Loop over the users to populate the ViewModel
-            // - instantiate ViewModel
-            // - use _rolesService
-            // - Create multi-selects
-            foreach (PSUser user in users)
-            {
-                ManageUserRolesViewModel viewModel = new();
-                viewModel.PSUser = user;
-                IEnumerable<string> selected = await _rolesService.GetUserRolesAsync(user);
-                viewModel.Roles = new SelectList(await _rolesService.GetRolesAsync(), "Name", "Name", selected);
-
-                model.Add(viewModel);
-            }
-
-            //return the model to the view
-
-            return View(model);
-        }
+       
 
         [HttpPost]
         [ValidateAntiForgeryToken]
