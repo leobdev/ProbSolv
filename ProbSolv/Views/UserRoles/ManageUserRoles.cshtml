@@ -8,7 +8,12 @@
 @inject UserManager<PSUser> UserManager
 @inject IPSRolesService RolesService
 
-    <div class="container-fluid">
+@{
+
+
+}
+
+<div class="container-fluid">
 
 
     <h1>Users</h1>
@@ -25,7 +30,7 @@
                                 <th>Name</th>
                                 <th>Current Role</th>
                                 <th>New Role</th>
-                                <th>Manage Role</th>
+
                             </tr>
                         </thead>
                         <tbody>
@@ -35,13 +40,18 @@
                                     <td>@item.PSUser.FullName</td>
                                     <td>@(await RolesService.GetUserMainRoleAsync(item.PSUser))</td>
                                     <td>
-                                    <form asp-action="ManageUserRoles" asp-controller="UserRoles" method="post">
-                                        <input type="hidden" asp-for="@item.PSUser.Id" />
+                                        <form asp-action="ManageUserRoles" asp-controller="UserRoles" method="post">
+                                            <input type="hidden" value="@item.PSUser.Id" name="userId" />
+                                            
+                                            
                                             <div class="flex flex-wrap gap-2 items-center">
-                                                <select asp-for="@item.SelectedRole" asp-items="@item.Roles" ></select>
+                                                <select asp-for="@item.SelectedRole" asp-items="@item.Roles"></select>
                                             </div>
-                                            <input type="submit" class="btn btn-primary" value="Assign Role">
-                                    </form>
+                                            <div>
+                                                <input type="submit" class="btn btn-primary" value="Assign Role">
+
+                                            </div>
+                                        </form>
                                     </td>
                                     <td>
                                     </td>
@@ -58,7 +68,7 @@
 
 </div>
 
-@section scripts{
+@section scripts {
 
     <script>
         $('#style-3').DataTable({
@@ -89,7 +99,7 @@
             var modal = $(this)
             modal.find('.modal-title').text('New message to ' + user)
             modal.find('.modal-body input').val(userId)
-            
+
         });
 
     </script>
@@ -102,4 +112,3 @@
 
 
 
-           

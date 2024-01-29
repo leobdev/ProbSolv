@@ -21,7 +21,7 @@ namespace ProbSolv.Models
 
         [NotMapped]
         [Display(Name = "Name Initials")]
-        public string NameInitials { get { return $"{FirstName[0]} {LastName[0]}"; } }
+        public string NameInitials { get { return $"{FirstName[0]} {LastName[0]}"; } }  
 
         [NotMapped]
         [DataType(DataType.Upload)]

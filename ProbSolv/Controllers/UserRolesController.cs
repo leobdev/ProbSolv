@@ -23,27 +23,26 @@ namespace ProbSolv.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> UserRolesIndex()
+        public async Task<IActionResult> ManageUserRoles()
         {
             List<ManageUserRolesViewModel> model = new();
              
             int companyId = User.Identity.GetCompanyId().Value;
             List<PSUser> users = await _companyInfoService.GetAllMembersAsync(companyId);
 
-            var roles = await _rolesService.GetRolesAsync(); 
+            var roles = await _rolesService.GetRolesAsync();
 
            
-
-
 
             foreach (var user in users)
             {
 
                 var selected = await _rolesService.GetUserRolesAsync(user);
+
                 ManageUserRolesViewModel vm = new ManageUserRolesViewModel()
                 {
                     PSUser = user,
-                    Roles = new SelectList(roles, "Id", "Name", selected.FirstOrDefault()),
+                    Roles = new SelectList(roles, "Name", "Name", selected.FirstOrDefault()),
                     SelectedRole = selected.FirstOrDefault()
                 };            
 
@@ -57,13 +56,13 @@ namespace ProbSolv.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ManageUserRoles(ManageUserRolesViewModel model)
+        public async Task<IActionResult> ManageUserRoles(ManageUserRolesViewModel item, string userId)
         {
             // Get the companyId
             int companyId = User.Identity.GetCompanyId().Value;
 
             //Instantiate the PSUser
-            PSUser user = (await _companyInfoService.GetAllMembersAsync(companyId)).FirstOrDefault(u => u.Id == model.PSUser.Id);
+            PSUser user = (await _companyInfoService.GetAllMembersAsync(companyId)).FirstOrDefault(u => u.Id == userId);
 
             //Get Roles for the user
             //IEnumerable<string> roles = await _rolesService.GetUserRolesAsync(user);
@@ -71,7 +70,7 @@ namespace ProbSolv.Controllers
             
 
             //Add user to the new role
-            await _rolesService.AddUserRoleAsync(model.PSUser, model.SelectedRole);
+            await _rolesService.AddUserRoleAsync(user, item.SelectedRole);
 
             //Navigate back to the view
             return RedirectToAction(nameof(ManageUserRoles));
