@@ -21,7 +21,7 @@
 
 
     <div class="row">
-        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+        <div class="col-xl-10 col-lg-10 col-md-10 col-sm-12 col-12">
             <div class="statbox widget box box-shadow">
                 <div class="widget-content widget-content-area">
                     <table id="style-3" class="table style-3  table-hover" style="width:100%">
@@ -30,6 +30,7 @@
                                 <th>Name</th>
                                 <th>Current Role</th>
                                 <th>New Role</th>
+                                <th></th>
 
                             </tr>
                         </thead>
@@ -38,23 +39,32 @@
                             {
                                 <tr>
                                     <td>@item.PSUser.FullName</td>
-                                    <td>@(await RolesService.GetUserMainRoleAsync(item.PSUser))</td>
-                                    <td>
+                                         <td>
+                                        @foreach(var role in item.UserRoles)
+                                        {
+                                            <a asp-action="RemoveRole"  asp-route-userId="@item.PSUser.Id" asp-route-role="@role" data-toggle="tooltip" data-placement="top" title="remove role" class="bs-tooltip btn btn-outline-primary">@role</a>
+                                            
+                                        }
+                                        </td>
                                         <form asp-action="ManageUserRoles" asp-controller="UserRoles" method="post">
+                                    <td>
+                                        <div>
                                             <input type="hidden" value="@item.PSUser.Id" name="userId" />
-                                            
-                                            
-                                            <div class="flex flex-wrap gap-2 items-center">
-                                                <select asp-for="@item.SelectedRole" asp-items="@item.Roles"></select>
-                                            </div>
-                                            <div>
-                                                <input type="submit" class="btn btn-primary" value="Assign Role">
+                                        </div>
 
-                                            </div>
-                                        </form>
+                                            
+                                            
+                                        
+                                                <select asp-for="@item.SelectedRole" class="form-control" asp-items="@item.Roles"></select>
+                                           
                                     </td>
                                     <td>
+                                        <div>
+
+                                                <input type="submit" class="btn btn-primary" value="Assign Role">
+                                        </div>
                                     </td>
+                                        </form>
                                 </tr>
                             }
                         </tbody>

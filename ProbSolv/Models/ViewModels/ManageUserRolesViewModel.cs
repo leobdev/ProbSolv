@@ -10,6 +10,8 @@ namespace ProbSolv.Models.ViewModels
 
         public string SelectedRole { get; set; }
 
+        public IList<string> UserRoles { get; set; }
+
        
     }
 }

@@ -6,6 +6,8 @@ using ProbSolv.Models;
 using ProbSolv.Models.Enums;
 using ProbSolv.Models.ViewModels;
 using ProbSolv.Services.Interfaces;
+using System.Collections;
+using System.Diagnostics.Eventing.Reader;
 
 namespace ProbSolv.Controllers
 {
@@ -31,6 +33,7 @@ namespace ProbSolv.Controllers
             List<PSUser> users = await _companyInfoService.GetAllMembersAsync(companyId);
 
             var roles = await _rolesService.GetRolesAsync();
+          
 
            
 
@@ -43,7 +46,8 @@ namespace ProbSolv.Controllers
                 {
                     PSUser = user,
                     Roles = new SelectList(roles, "Name", "Name", selected.FirstOrDefault()),
-                    SelectedRole = selected.FirstOrDefault()
+                    SelectedRole = selected.FirstOrDefault(),
+                    UserRoles = await _userManager.GetRolesAsync(user)
                 };            
 
                 model.Add(vm);
@@ -71,11 +75,27 @@ namespace ProbSolv.Controllers
 
             //Add user to the new role
             await _rolesService.AddUserRoleAsync(user, item.SelectedRole);
-
+             
             //Navigate back to the view
             return RedirectToAction(nameof(ManageUserRoles));
 
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> RemoveRole(string role, string userId)
+        {
+            // Get the companyId
+            int companyId = User.Identity.GetCompanyId().Value;
+
+            //Instantiate the PSUser
+            PSUser user = (await _companyInfoService.GetAllMembersAsync(companyId)).FirstOrDefault(u => u.Id == userId);
+
+            await _rolesService.RemoveUserFromRoleAsync(user, role);
+
+            return RedirectToAction(nameof(ManageUserRoles));
+        }
+
 
 
 
