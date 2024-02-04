@@ -6,9 +6,13 @@ namespace ProbSolv.Models.ViewModels
     {
         public Project Project { get; set; }
 
-        public MultiSelectList Users { get; set; }
+        public MultiSelectList Developers { get; set; }
 
-        public List<string> SelectedUsers { get; set; }
+        public MultiSelectList SelectedDevelopers { get; set; }
+
+        public MultiSelectList Submitters { get; set; }
+
+        public MultiSelectList SelectedSubmitters { get; set; }
 
     }
 }

@@ -3,41 +3,108 @@
 
 <div class="container">
     <h2>Assign Members for </h2>
-    
-    <div class="row"></div>
 
-    <div class="col-md-6">
-        <h3>@Model.Project.Name</h3>
+    <h3>@Model.Project.Name</h3>
+    <div class="row">
 
-        <div class="card">
-            <div class="card-header">
-                <label asp-for="@Model.Users" class="control-label">Assign team members for Project</label>
 
-            </div>
-            <div class="card-body">
-                <form method="post" asp-action="AssignMembers" asp-controller="Projects">
-                    <input hidden asp-for="Project.Id"/>
+
+
+        <form method="post" asp-action="AssignMembers" asp-controller="Projects">
+            <input hidden asp-for="Project.Id" />
+            <div class="card">
+                <div class="card-header">
+                    <label asp-for="@Model.SelectedDevelopers" class="control-label">Assign developers for Project</label>
+
+                </div>
+                <div class="card-body">
+
+
                     <div class="col-12 mb-3">
 
-                    <div class="form-group">
-                        <select required asp-for="@Model.SelectedUsers" class="form-control" asp-items="@Model.Users" multiple="multiple"></select>
+                        <div class="form-group">
+                            <select required asp-for="@Model.SelectedDevelopers" class="form-control" asp-items="@Model.Developers" multiple="multiple"></select>
 
-                    </div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <div class="col-lg-offset-2 col-lg-10">
-                            <input type="submit" class="btn alert-primary" value="Assign Users" />
+                            <input type="submit" class="btn alert-primary" value="Add" />
                         </div>
 
                     </div>
 
-                </form>
+
+
+                </div>
+
+                <div class="card-body">
+
+
+                    <div class="col-12 mb-3">
+
+                        <div class="form-group">
+                            <select required asp-for="@Model.Developers" class="form-control" asp-items="@Model.SelectedDevelopers" multiple="multiple"></select>
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-offset-2 col-lg-10">
+                            <input type="submit" class="btn alert-primary" value="Remove" />
+                        </div>
+
+                    </div>
+
+
+                </div>
 
             </div>
 
-        </div>
+            <div class="card">
+                <div class="card-header">
+                    <label asp-for="@Model.SelectedSubmitters" class="control-label">Assign submitters for Project</label>
 
+                </div>
+                <div class="card-body">
+                    <div class="col-12 mb-3">
+
+                        <div class="form-group">
+                            <select required asp-for="@Model.SelectedSubmitters" class="form-control" asp-items="@Model.Submitters" multiple="multiple"></select>
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-offset-2 col-lg-10">
+                            <input type="submit" class="btn alert-primary" value="Add" />
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+                <div class="card-body">
+                    <div class="col-12 mb-3">
+
+                        <div class="form-group">
+                            <select required asp-for="@Model.Submitters" class="form-control" asp-items="@Model.SelectedSubmitters" multiple="multiple"></select>
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-offset-2 col-lg-10">
+                            <input type="submit" class="btn alert-primary" value="Remove" />
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+        </form>
     </div>
+
     <div>
         <a asp-action="Details" asp-controller="Projects" asp-route-id="@Model.Project.Id">Back to Details</a>
     </div>

@@ -161,13 +161,18 @@ namespace ProbSolv.Controllers
 
             model.Project = await _projectService.GetProjectByIdAsync(projectId, companyId);
 
-            List<PSUser> developers = await _rolesService.GetUsersInRoleAsync(nameof(Roles.Developer), companyId);
-            List<PSUser> submitters = await _rolesService.GetUsersInRoleAsync(nameof(Roles.Submitter), companyId);
-            List<PSUser> companyMembers = developers.Concat(submitters).ToList();
 
-            List<string> projectMembers = model.Project.Members.Select(m => m.Id).ToList();
+            IEnumerable<PSUser> projectDevs = await _projectService.GetProjectMembersByRoleAsync(projectId, nameof(Roles.Developer));
+            IEnumerable<PSUser> projectSubms = await _projectService.GetProjectMembersByRoleAsync(projectId, nameof(Roles.Submitter));
 
-            model.Users = new MultiSelectList(companyMembers, "Id", "FullName", projectMembers);
+            IEnumerable<PSUser> developers = (await _rolesService.GetUsersInRoleAsync(nameof(Roles.Developer), companyId)).Except(projectDevs);
+            IEnumerable<PSUser> submitters = (await _rolesService.GetUsersInRoleAsync(nameof(Roles.Submitter), companyId)).Except(projectSubms);
+
+            model.Developers = new MultiSelectList(developers, "Id", "FullName", projectDevs);
+            model.Submitters = new MultiSelectList(submitters, "Id", "FullName", projectSubms);
+
+            model.SelectedDevelopers = new MultiSelectList(developers, "Id", "FullName", projectDevs);
+            model.SelectedSubmitters = new MultiSelectList(submitters, "Id", "FullName", projectSubms);
 
             return View(model);
         }
@@ -177,23 +182,34 @@ namespace ProbSolv.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AssignMembers(ProjectMembersViewModel model)
         {
-            if(model.SelectedUsers != null)
+            if(model.SelectedDevelopers != null)
             {
-                List<string> memberIds = (await _projectService.GetAllProjectMembersExceptPMAsync(model.Project.Id))
-                                                                                          .Select(m => m.Id)
-                                                                                          .ToList();
 
-                foreach(string member in memberIds)
+                foreach(var member in model.Developers)
                 {
-                    await _projectService.RemoveUserFromProjectAsync(member, model.Project.Id);
+                    await _projectService.RemoveUserFromProjectAsync(member.Text, model.Project.Id);
                 }
 
-                foreach(string member in model.SelectedUsers)
+                foreach(var member in model.SelectedDevelopers)
                 {
-                    await _projectService.AddUserToProjectAsync(member, model.Project.Id);
+                    await _projectService.AddUserToProjectAsync(member.Text, model.Project.Id);
                 }
 
+                return RedirectToAction("Details", "Projects", new { id = model.Project.Id });
 
+            }
+
+            if (model.SelectedSubmitters != null)
+            {
+                foreach (var member in model.Submitters)
+                {
+                    await _projectService.RemoveUserFromProjectAsync(member.Text, model.Project.Id);
+                }
+
+                foreach (var member in model.SelectedSubmitters)
+                {
+                    await _projectService.AddUserToProjectAsync(member.Text, model.Project.Id);
+                }
 
                 return RedirectToAction("Details", "Projects", new { id = model.Project.Id });
 
