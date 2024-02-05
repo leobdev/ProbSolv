@@ -237,7 +237,7 @@
                                     <br>
                                     @if (User.IsInRole(nameof(Roles.Admin)) || (psUser.Id == projectManager.Id))
                                     {
-                                        <a class="btn btn-sx btn-outline-info" style="font:small" asp-action="AssignMembers" asp-controller="Projects" asp-route-projectId="@Model.Id"> Assign User</a>
+                                        <a class="btn btn-sx btn-outline-info" style="font:small" asp-action="AssignMembers" asp-controller="Projects" asp-route-id="@Model.Id"> Assign User</a>
                                     }
 
                                 </div>
@@ -253,7 +253,7 @@
                                     <h5 class="text-muted m-b-0">Not Assigned</h5>
                                     @if (User.IsInRole(nameof(Roles.Admin)))
                                     {
-                                        <span><a asp-action="AssignPM" asp-controller="Projects" asp-route-projectId="@Model.Id" class="btn btn-sx btn-outline-info">Assign PM</a></span>
+                                        <span><a asp-action="AssignPM" asp-controller="Projects" asp-route-id="@Model.Id" class="btn btn-sx btn-outline-info">Assign PM</a></span>
                                     }
                                 </div>
 

@@ -7,7 +7,7 @@
     SelectList availableSubmitters = new SelectList(Model.AvailableSubmitters.Items, "Id", "FullName");
 }
 
-<h1 class="font-rockwell text-dark text-xl font-bold mb-2">@ViewData["Title"]</h1>
+<h1 class="">@ViewData["Title"]</h1>
 <h2 class="font-rockwell font-semibold text-lg text-zinc-700 mb-4">@Model.Project.Name</h2>
 <hr class="mb-4 h-[2px] rounded bg-mid border-0" />
 
@@ -28,8 +28,10 @@
         </div>
 
         <div class="flex flex-col gap-2 items-center justify-center">
-            <button type="button" data-add-button class="btn btn-secondary">
-                Add
+            <button title="Add Member" type="button" data-add-button class="rounded-md p-2 bg-success hover:bg-opacity-80 transition-opacity">
+                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5" />
+                </svg>
             </button>
             <button title="Remove Member" type="button" data-remove-button class="rounded-md p-2 bg-danger hover:bg-opacity-80 transition-opacity">
                 <svg xmlns="http://www.w3.org/2000/svg" aria-hidden fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">

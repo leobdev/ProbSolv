@@ -28,20 +28,22 @@ namespace ProbSolv.Controllers
         private readonly IPSProjectService _projectService;
         private readonly UserManager<PSUser> _userManager;
         private readonly IPSCompanyInfoService _companyInfoService;
+        private readonly IPSNotificationService _notificationService;
 
 
-        public ProjectsController( IPSRolesService rolesService, IPSLookupService lookupService, IPSFileService fileService, IPSProjectService projectService, UserManager<PSUser> userManager, IPSCompanyInfoService companyInfoService)
+        public ProjectsController(IPSRolesService rolesService, IPSLookupService lookupService, IPSFileService fileService, IPSProjectService projectService, UserManager<PSUser> userManager, IPSCompanyInfoService companyInfoService, IPSNotificationService notificationService)
         {
-            
+
             _rolesService = rolesService;
             _lookupService = lookupService;
             _fileService = fileService;
             _projectService = projectService;
             _userManager = userManager;
             _companyInfoService = companyInfoService;
+            _notificationService = notificationService;
         }
 
-        
+
 
         public async Task<IActionResult> MyProjects()
         {
@@ -153,26 +155,38 @@ namespace ProbSolv.Controllers
 
         [Authorize(Roles = "Admin, ProjectManager")]
         [HttpGet]
-        public async Task<IActionResult> AssignMembers(int projectId)
+        public async Task<IActionResult> AssignMembers(int id)
         {
-            ProjectMembersViewModel model = new();
+            AssignMembersViewModel model = new();
 
             int companyId = User.Identity.GetCompanyId().Value;
 
-            model.Project = await _projectService.GetProjectByIdAsync(projectId, companyId);
+            Project? project = await _projectService.GetProjectByIdAsync(id, companyId);
 
+            IEnumerable<PSUser> selectedDevs = await _projectService.GetProjectMembersByRoleAsync(id, nameof(Roles.Developer));
+            IEnumerable<PSUser> selectedSubs = await _projectService.GetProjectMembersByRoleAsync(id, nameof(Roles.Submitter));
 
-            IEnumerable<PSUser> projectDevs = await _projectService.GetProjectMembersByRoleAsync(projectId, nameof(Roles.Developer));
-            IEnumerable<PSUser> projectSubms = await _projectService.GetProjectMembersByRoleAsync(projectId, nameof(Roles.Submitter));
+            IEnumerable<PSUser> allDevs = (await _rolesService.GetUsersInRoleAsync(nameof(Roles.Developer), companyId));
+            IEnumerable<PSUser> allSubs = (await _rolesService.GetUsersInRoleAsync(nameof(Roles.Submitter), companyId));
 
-            IEnumerable<PSUser> developers = (await _rolesService.GetUsersInRoleAsync(nameof(Roles.Developer), companyId)).Except(projectDevs);
-            IEnumerable<PSUser> submitters = (await _rolesService.GetUsersInRoleAsync(nameof(Roles.Submitter), companyId)).Except(projectSubms);
+            IEnumerable<PSUser> availDevs = allDevs.Except(selectedDevs);
+            IEnumerable<PSUser> availSubs = allSubs.Except(selectedSubs );
 
-            model.Developers = new MultiSelectList(developers, "Id", "FullName", projectDevs);
-            model.Submitters = new MultiSelectList(submitters, "Id", "FullName", projectSubms);
+            List<string> projectMemberIds = selectedDevs
+                .Concat(selectedSubs)
+                .Select(member => member.Id)
+                .ToList();
 
-            model.SelectedDevelopers = new MultiSelectList(developers, "Id", "FullName", projectDevs);
-            model.SelectedSubmitters = new MultiSelectList(submitters, "Id", "FullName", projectSubms);
+            model.Project = project;
+
+            model.AllDevelopers = new MultiSelectList(allDevs, "Id", "FullName");
+            model.AllSubmitters = new MultiSelectList(allSubs, "Id", "FullName");
+
+            model.SelectedDevelopers = new MultiSelectList(selectedDevs, "Id", "FullName");
+            model.SelectedSubmitters = new MultiSelectList(selectedSubs, "Id", "FullName");
+
+            model.AvailableDevelopers = new MultiSelectList(availDevs, "Id", "FullName");
+            model.AvailableSubmitters  = new MultiSelectList(availSubs, "Id", "FullName");
 
             return View(model);
         }
@@ -180,48 +194,69 @@ namespace ProbSolv.Controllers
         [Authorize(Roles = "Admin, ProjectManager")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AssignMembers(ProjectMembersViewModel model)
+        public async Task<IActionResult> AssignMembers(AssignMembersViewModel model)
         {
-            if(model.SelectedDevelopers != null)
+            if (ModelState.IsValid)
             {
+                List<string> memberIds = (await _projectService.GetAllProjectMembersExceptPMAsync(model.Project.Id))
+                    .Select(member => member.Id)
+                    .ToList();
 
-                foreach(var member in model.Developers)
+                // remove previous members from projects
+                foreach (string member in memberIds)
                 {
-                    await _projectService.RemoveUserFromProjectAsync(member.Text, model.Project.Id);
+                    await _projectService.RemoveUserFromProjectAsync(member, model.Project.Id);
+
                 }
 
-                foreach(var member in model.SelectedDevelopers)
+                // add the selected members to the project
+                foreach (string memberId in model.SelectedUsers ?? new List<string>())
                 {
-                    await _projectService.AddUserToProjectAsync(member.Text, model.Project.Id);
+                    // if memberId is null, skip to the next memberId
+                    if (memberId == null)
+                        continue;
+
+                    // add user to project
+                    await _projectService.AddUserToProjectAsync(memberId, model.Project.Id);
+
+                    // check if the user was already a member
+                    /*if (!memberIds.Contains(memberId))
+                    {
+                        // send notification to new members
+                        Notification notification = new()
+                        {
+                            Title = "New Project Assignment",
+                            Message = $"You have been assigned to the project: {model.Project.Name}.",
+                            RecipientId = memberId,
+                        };
+
+                        await _notificationService.AddNotificationAsync(notification);
+
+                        if (!User.IsInRole(nameof(Roles.DemoUser)))
+                        {
+                            _ = _notificationService.SendEmailNotificationAsync(notification, notification.Title);
+
+                        }
+                    }*/
+
                 }
-
-                return RedirectToAction("Details", "Projects", new { id = model.Project.Id });
-
+                return RedirectToAction("Details", new { id = model.Project.Id });
             }
-
-            if (model.SelectedSubmitters != null)
+            else
             {
-                foreach (var member in model.Submitters)
+                var errors = ModelState.Values.SelectMany(v => v.Errors);
+
+                foreach (var error in errors)
                 {
-                    await _projectService.RemoveUserFromProjectAsync(member.Text, model.Project.Id);
+                    ModelState.AddModelError("", error.ErrorMessage);
                 }
-
-                foreach (var member in model.SelectedSubmitters)
-                {
-                    await _projectService.AddUserToProjectAsync(member.Text, model.Project.Id);
-                }
-
-                return RedirectToAction("Details", "Projects", new { id = model.Project.Id });
-
+                
+                return View(model); // Return the view with the same model to display the errors
             }
-
-            return RedirectToAction(nameof(AssignMembers), new {projectId = model.Project.Id});
 
         }
-
-
-        // GET: Projects/Details/5
-        public async Task<IActionResult> Details(int? id)
+            // GET: Projects/Details/5
+            public async Task<IActionResult> Details(int? id)
         {
 
             if (id == null )

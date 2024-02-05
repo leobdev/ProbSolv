@@ -271,10 +271,10 @@ namespace ProbSolv.Services
             return null;
         }
 
-        public async Task<List<PSUser>> GetProjectMembersByRoleAsync(int projectId, string role)
+        public async Task<List<PSUser>> GetProjectMembersByRoleAsync(int id, string role)
         {
             Project project = await _context.Projects.Include(x => x.Members)
-                                     .FirstOrDefaultAsync(t => t.Id == projectId);
+                                     .FirstOrDefaultAsync(t => t.Id == id);
 
             List<PSUser> members = new();
 
