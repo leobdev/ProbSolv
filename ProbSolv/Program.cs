@@ -25,9 +25,9 @@ builder.Services.AddDefaultIdentity<PSUser>(options => options.SignIn.RequireCon
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+/*builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
-
+*/
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentity<PSUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
