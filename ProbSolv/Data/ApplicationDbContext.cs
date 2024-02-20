@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ProbSolv.Models;
 
@@ -26,5 +27,19 @@ namespace ProbSolv.Data
         public DbSet<TicketType> TicketTypes { get; set; }
 
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Configure the Id column for AspNetRoles table
+            modelBuilder.Entity<IdentityRole>()
+                .Property(r => r.Id)
+                .HasColumnType("nvarchar(255)"); // Set the data type for the Id column
+        }
+
+
     }
+
+
+
 }

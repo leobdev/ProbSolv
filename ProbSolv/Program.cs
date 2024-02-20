@@ -12,18 +12,18 @@ var builder = WebApplication.CreateBuilder(args);
 //var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("AZURE_POSTGRESQL_CONNECTIONSTRING");
+var connectionString = builder.Configuration.GetConnectionString("sqlServerConnection");
 
 var mailSettings = builder.Configuration.GetSection("MailSettings") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
 
 
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(connectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
+    options.UseSqlServer(DataUtility.GetConnectionString(builder.Configuration), o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 
-builder.Services.AddDefaultIdentity<PSUser>(options => options.SignIn.RequireConfirmedAccount = true)
+/*builder.Services.AddDefaultIdentity<PSUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
-
+*/
 
 /*builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));

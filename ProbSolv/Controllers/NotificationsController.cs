@@ -25,8 +25,10 @@ namespace ProbSolv.Controllers
         private readonly IPSNotificationService _notificationService;
         private readonly IPSProjectService _projectService;
         private readonly IPSRolesService _rolesService;
+        private readonly IPSCompanyInfoService _companyInfoService;
+        private readonly IPSTicketService _ticketService;
 
-        public NotificationsController(ApplicationDbContext context, IEmailSender emailSender, UserManager<PSUser> userManager, IPSNotificationService notificationService, IPSProjectService projectService, IPSRolesService rolesService)
+        public NotificationsController(ApplicationDbContext context, IEmailSender emailSender, UserManager<PSUser> userManager, IPSNotificationService notificationService, IPSProjectService projectService, IPSRolesService rolesService, IPSCompanyInfoService companyInfoService, IPSTicketService ticketService)
         {
             _context = context;
             _emailSender = emailSender;
@@ -34,10 +36,12 @@ namespace ProbSolv.Controllers
             _notificationService = notificationService;
             _projectService = projectService;
             _rolesService = rolesService;
+            _companyInfoService = companyInfoService;
+            _ticketService = ticketService;
         }
 
         // GET: Notifications
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Inbox()
         {
             PSUser psUser = await _userManager.GetUserAsync(User);
             var mainRole = await _rolesService.GetUserMainRoleAsync(psUser);
@@ -45,24 +49,52 @@ namespace ProbSolv.Controllers
 
             NotificationViewModel model = new();
 
-            model.Notifications = await _notificationService.GetUserNotificationsAsync(psUser.Id);
 
 
             if (mainRole == Roles.Admin.ToString())
             {
-                model.Projects = new SelectList(await _projectService.GetAllProjectsByCompanyAsync(companyId), "Id", "Name");
+                model.TicketsList = new SelectList(await _ticketService.GetAllTicketsByCompanyAsync(companyId), "Id", "Title");
             }
             else
             {
-                model.Projects = new SelectList(await _projectService.GetUserProjectsAsync(psUser.Id), "Id", "Name");
+                model.TicketsList = new SelectList(await _ticketService.GetTicketsByUserIdAsync(psUser.Id, companyId), "Id", "Title");
             }
 
             //Fix Later
-            //model.RecipientLists = _projectService.get
+            model.RecipientLists = new SelectList(await _companyInfoService.GetAllMembersAsync(companyId), "Id","FullName");
 
 
 
-            //var notifications = await _context.Notifications.ToListAsync();
+            model.Notifications = (await _notificationService.GetAllNotificationsAsync()).Where(r => r.RecipientId == psUser.Id).ToList();
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> Outbox()
+        {
+            PSUser psUser = await _userManager.GetUserAsync(User);
+            var mainRole = await _rolesService.GetUserMainRoleAsync(psUser);
+            int companyId = User.Identity.GetCompanyId().Value;
+
+            NotificationViewModel model = new();
+
+            model.Notifications = (await _notificationService.GetUserNotificationsAsync(psUser.Id)).Where(r => r.SenderId == psUser.Id).ToList();
+
+            if (mainRole == Roles.Admin.ToString())
+            {
+                model.TicketsList = new SelectList(await _ticketService.GetAllTicketsByCompanyAsync(companyId), "Id", "Title");
+            }
+            else
+            {
+                model.TicketsList = new SelectList(await _ticketService.GetTicketsByUserIdAsync(psUser.Id, companyId), "Id", "Title");
+            }
+
+            //Fix Later
+            model.RecipientLists = new SelectList(await _companyInfoService.GetAllMembersAsync(companyId), "Id", "FullName");
+
+
+
+            model.Notifications = await _notificationService.GetAllNotificationsAsync();
 
             return View(model);
         }
@@ -104,21 +136,31 @@ namespace ProbSolv.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,TicketId,Title,Message,Created,RecipientId,SenderId,Viewed")] Notification notification)
+        public async Task<IActionResult> Create(NotificationViewModel model)
         {
             if (ModelState.IsValid)
             {
+                Notification notification = new Notification()
+                {
+                     Created = DateTimeOffset.Now,
+                     Message = model.Message,
+                     RecipientId = model.RecipientId,
+                     SenderId = _userManager.GetUserId(User),
+                     Title = model.Subject,
+                     TicketId = model.TicketId,
+                     Viewed = false
 
+                };
 
+                await _notificationService.AddNotificationAsync(notification);
+                await _notificationService.SendEmailNotificationAsync(notification, model.Subject);
 
-                _context.Add(notification);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Inbox));
             }
-            ViewData["RecipientId"] = new SelectList(_context.Users, "Id", "Id", notification.RecipientId);
-            ViewData["SenderId"] = new SelectList(_context.Users, "Id", "Id", notification.SenderId);
-            ViewData["TicketId"] = new SelectList(_context.Tickets, "Id", "Description", notification.TicketId);
-            return View(notification);
+
+
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Notifications/Edit/5

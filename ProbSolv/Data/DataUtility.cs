@@ -21,14 +21,14 @@ namespace ProbSolv.Data
 
 
             //The default connection string will come from appSettings like usual
-            var connectionStringBuilder = new NpgsqlConnectionStringBuilder(
-            configuration.GetConnectionString("DefaultConnection"));
+            var connectionString = 
+            configuration.GetConnectionString("sqlServerConnection");
 
             //connectionStringBuilder.Password = configuration["password"];
-            var connectionString = connectionStringBuilder.ConnectionString;
+            //var connectionString = connectionStringBuilder.ConnectionString;
             //It will be automatically overwritten if we are running on Heroku
-            var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
-            return string.IsNullOrEmpty(databaseUrl) ? connectionString : BuildConnectionString(databaseUrl);
+            //var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+            return connectionString;
 
 
 
@@ -41,7 +41,7 @@ namespace ProbSolv.Data
             */
         }
 
-        public static string BuildConnectionString(string databaseUrl)
+        /*public static string BuildConnectionString(string databaseUrl)
         {
             //Provides an object representation of a uniform resource identifier (URI) and easy access to the parts of the URI.
             var databaseUri = new Uri(databaseUrl);
@@ -59,7 +59,7 @@ namespace ProbSolv.Data
             };
 
             return builder.ToString();
-        }
+        }*/
 
         public static async Task ManageDataAsync(IHost host)
         {
