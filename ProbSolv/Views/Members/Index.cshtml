@@ -1,0 +1,103 @@
+﻿@using ProbSolv.Services.Interfaces
+@model IEnumerable<PSUser>
+
+    @inject IPSRolesService RolesService
+
+@{
+    ViewBag.Title = "Members List";
+}
+
+
+
+<div class="container-fluid">
+    <div class="mt-5 ">
+        <div class="row" id="cancel-row">
+            <!--Members Data Table-->
+            <div class="col-xl-10 col-lg-10 col-md-12 col-sm-12 col-12 layout-spacing">
+                <div class="statbox widget box box-shadow">
+                    <h5 class="">Team Members</h5>
+                    <br />
+                    <div class="widget-content widget-content-area">
+                        <table id="zero-config" class="table dt-table-hover" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Member Name</th>
+
+                                    <th class="">Role</th>
+                                    <th class="">Email</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var member in Model)
+                                {
+
+                                    <tr>
+                                        <td class="">
+
+                                            <a asp-area="Identity" asp-action="Account/Manage/Index" asp-route-id="">
+                                                <div class="avatar">
+                                                    @if (member.AvatarFileData != null)
+                                                    {
+                                                        <img style="height:50px;max-width:55px;width: expression(this.width > 500 ? 500: true);" src="data:image/*;base64,@(Convert.ToBase64String(member.AvatarFileData))" class="img-fluid rounded-circle" alt="avatar">
+                                                    }
+                                                    else
+                                                    {
+                                                        <span><img style="width:40px;height:40px" src="/img/avatardefault_92824.png" class="img-fluid rounded-circle" alt="avatar"></span>
+
+                                                    }
+                                                </div>
+                                                <div class="flex flex-col">
+                                                    @member.FullName
+
+                                                </div>
+                                            </a>
+
+
+                                        </td>
+
+                                        <td class=""><span class="shadow-none badge badge-primary">@await RolesService.GetUserMainRoleAsync(member)</span></td>
+                                        <td>@member.Email</td>
+                                        <td class="">
+                                            <a asp-action="Details" asp-route-id="@member.Id"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg></a>
+                                            <a asp-action="Delete" asp-route-id="@member.Id"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="main-grid-item-icon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="8.5" cy="7" r="4" /><line x1="18" x2="23" y1="8" y2="13" /><line x1="23" x2="18" y1="8" y2="13" /></svg></a>
+                                        </td>
+
+
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+        $('#zero-config').DataTable({
+            "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
+                "<'table-responsive'tr>" +
+                "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
+            "oLanguage": {
+                "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
+                "sInfo": "Showing page _PAGE_ of _PAGES_",
+                "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                "sSearchPlaceholder": "Search...",
+                "sLengthMenu": "Results :  _MENU_",
+            },
+            "stripeClasses": [],
+            "lengthMenu": [10, 20, 50],
+            "pageLength": 8
+        });
+
+
+    </script>
+}
+```

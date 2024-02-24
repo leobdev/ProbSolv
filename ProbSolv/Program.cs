@@ -49,6 +49,7 @@ builder.Services.AddScoped<IPSLookupService, PSLookupService>();
 builder.Services.AddScoped<IEmailSender, PSEmailService>();
 builder.Services.Configure<MailSettings>(mailSettings);
 builder.Services.AddScoped<IPSBadgeService, PSBadgeService>();
+builder.Services.AddScoped<IPSMemberService, PSMemberService>();
 
 builder.Services.AddDataProtection();
 
