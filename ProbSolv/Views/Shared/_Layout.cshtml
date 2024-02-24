@@ -60,6 +60,10 @@
     <!-- include summernote css -->
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
 
+    <link rel="stylesheet" type="text/css" href="/plugins/dropify/dropify.min.css">
+    <link href="/assets/css/users/account-setting.css" rel="stylesheet" type="text/css" />
+
+
 
 </head>
 <body class="sidebar-noneoverflow">
@@ -90,7 +94,7 @@
                 </li>
             </ul>
 
-            
+
 
 
             <ul class="navbar-item flex-row search-ul">
@@ -135,20 +139,20 @@
                         </div>
                         <div class="dropdown-item">
                             <a href="user_profile.html">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> 
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                                 <span>My Profile</span>
                             </a>
                         </div>
                         <div class="dropdown-item">
                             <a href="apps_mailbox.html">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-inbox"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg> 
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-inbox"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>
                                 <span>My Inbox</span>
                             </a>
                         </div>
-                        
+
                         <div class="dropdown-item">
                             <a href="auth_login.html">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> 
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                                 <span>Log Out</span>
                             </a>
                         </div>
@@ -174,7 +178,7 @@
 
                         @if (psUser.AvatarFileData != null)
                         {
-                            <img src="data:image/*;base64,@(Convert.ToBase64String(psUser.AvatarFileData))" class="img-fluid mr-2" alt="avatar">
+                            <img src="data:image/*;base64,@(Convert.ToBase64String(psUser.AvatarFileData))" alt="avatar">
                         }
                         else
                         {
@@ -330,22 +334,20 @@
                 </div>
 
             </div>
-            <div class="footer-wrapper">
-                <div class="footer-section f-section-1">
-                    <p class="">Copyright © 2024 <a target="_blank" href="https://designreset.com">Leo Barnuevo</a>, All rights reserved.</p>
-                </div>
-                <div class="footer-section f-section-2">
-                    <p class="">Coded with <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-heart"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></p>
-                </div>
-            </div>
         </div>
         <!--  END CONTENT AREA  -->
 
 
+        @* <div class="footer-wrapper">
+            <div class="footer-section f-section-1">
+                <p class="">Copyright © 2024 <a target="_blank" href="https://designreset.com">Leo Barnuevo</a>, All rights reserved.</p>
+            </div>
+            <div class="footer-section f-section-2">
+                <p class="">Coded with <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-heart"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></p>
+            </div>
+        </div> *@
     </div>
     <!-- END MAIN CONTAINER -->
- 
-
     <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
     <script src="/assets/js/libs/jquery-3.1.1.min.js"></script>
     <script src="/bootstrap/js/popper.min.js"></script>
@@ -366,6 +368,11 @@
     <script src="/assets/js/widgets/modules-widgets.js"></script>
     <script src="/plugins/table/datatable/datatables.js"></script>
 
+    <script src="/plugins/dropify/dropify.min.js"></script>
+    <script src="/plugins/blockui/jquery.blockUI.min.js"></script>
+    <script src="/assets/js/users/account-settings.js"></script>
+
+       <!--  END CUSTOM SCRIPTS FILE  -->
     <!-- include summernote js -->
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
 
@@ -377,7 +384,9 @@
         });
     </script>
 
-  
+    <script type="text/javascript" src="/js/qr.js"></script>
+    <script type="text/javascript" src="/js/qrcode.min.js"></script>
+
 
 
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->

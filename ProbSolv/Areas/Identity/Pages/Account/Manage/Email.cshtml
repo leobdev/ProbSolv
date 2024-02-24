@@ -5,9 +5,74 @@
     ViewData["ActivePage"] = ManageNavPages.Email;
 }
 
-<h3>@ViewData["Title"]</h3>
 <partial name="_StatusMessage" for="StatusMessage" />
-<div class="row">
+
+
+<div class="account-content">
+    <div class="scrollspy-example" data-spy="scroll" data-target="#account-settings-scroll" data-offset="-100">
+        <form method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                    <div id="general-info" method="post" class="section general-info">
+                        <div class="info">
+                            <h6 class="">Manage Email</h6>
+                            <div class="row">
+                                <div class="col-lg-11 mx-auto">
+                                    <div class="row">
+                                        <div class="col-xl-10 col-lg-12 col-md-8 mt-md-0 mt-4">
+                                            <div class="form">
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <div asp-validation-summary="All" class="text-danger"></div>
+                                                        @if (Model.IsEmailConfirmed)
+                                                        {
+                                                            <div class="form-group">
+                                                                <label asp-for="Email"></label>
+                                                                <input asp-for="Email" disabled type="text" class="form-control mb-4" id="">
+                                                                
+                                                            </div>
+                                                        }
+                                                        else
+                                                        {
+
+                                                            <div class="form-group">
+                                                                <label asp-for="Email"></label>
+                                                                <input asp-for="Email" disabled class="form-control" />
+                                                                <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="btn btn-link">Send verification email</button>
+
+                                                            </div>
+                                                        }
+                                                        <div class="form-group">
+                                                            <label asp-for="Input.NewEmail" class="form-label"></label>
+                                                            <input asp-for="Input.NewEmail" class="form-control" autocomplete="email" aria-required="true" />
+                                                            <span asp-validation-for="Input.NewEmail" class="text-danger"></span>
+                                                        </div>
+                                                        <div class="col-md-12 text-left mb-5">
+                                                            <button id="change-email-button" type="submit" asp-page-handler="ChangeEmail" class="btn btn-primary">Save Changes</button>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+@* <div class="row">
     <div class="col-md-6">
         <form id="email-form" method="post">
             <div asp-validation-summary="All" class="text-danger"></div>
@@ -15,9 +80,9 @@
             {
                 <div class="form-floating input-group">
                     <input asp-for="Email" class="form-control" disabled />
-                        <div class="input-group-append">
-                            <span class="h-100 input-group-text text-success font-weight-bold">✓</span>
-                        </div>
+                    <div class="input-group-append">
+                        <span class="h-100 input-group-text text-success font-weight-bold">✓</span>
+                    </div>
                     <label asp-for="Email" class="form-label"></label>
                 </div>
             }
@@ -38,7 +103,7 @@
         </form>
     </div>
 </div>
-
+ *@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }

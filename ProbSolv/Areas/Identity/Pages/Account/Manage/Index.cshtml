@@ -1,29 +1,114 @@
 ﻿@page
 @model IndexModel
+@using ProbSolv.Services.Interfaces
+@using ProbSolv.Models.ViewModels
+
+
+@inject UserManager<PSUser> UserManager
+@inject IPSRolesService RoleService
+@inject IPSFileService FileService
+
 @{
     ViewData["Title"] = "Profile";
     ViewData["ActivePage"] = ManageNavPages.Index;
+
+    PSUser? user = await UserManager.GetUserAsync(User);
+    bool isSignedIn = user is not null ? true : false;
+
 }
 
-<h3>@ViewData["Title"]</h3>
+
 <partial name="_StatusMessage" for="StatusMessage" />
-<div class="row">
-    <div class="col-md-6">
-        <form id="profile-form" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-floating">
-                <input asp-for="Username" class="form-control" disabled />
-                <label asp-for="Username" class="form-label"></label>
+
+<div class="account-content">
+    <div class="scrollspy-example" data-spy="scroll" data-target="#account-settings-scroll" data-offset="-100">
+        <form method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                    <div id="general-info" method="post" class="section general-info">
+                        <div class="info">
+                            <h6 class="">Profile</h6>
+                            <div class="row">
+                                <div class="col-lg-11 mx-auto">
+                                    <div class="row">
+                                        <div class="col-xl-2 col-lg-12 col-md-4">
+                                            <div class="text-center user-info">
+                                                @if (user?.AvatarFileData is null || user.AvatarContentType is null)
+                                                {
+                                                    <input accept="image/jpg, image/jpeg, image/png, image/webp, image/gif" asp-for="Input.Avatar" type="file" id="input-file-max-fs" class="dropify hidden h-20 w-20 object-cover rounded-full ring-4 ring-mid" data-default-file="/img/avatardefault_92824.png" data-max-file-size="2M" />
+
+                                                }
+                                                else
+                                                {
+                                                    <img class="rounded" style="height:100px;max-width:100px;width: expression(this.width > 500 ? 500: true);" src="@FileService.ConvertByteArrayToFile(user.AvatarFileData, user.AvatarContentType)" alt="@user.FullName" />
+
+                                                }
+                                                <p class="mt-2"><i class="flaticon-cloud-upload mr-1"></i> Upload Picture</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-10 col-lg-12 col-md-8 mt-md-0 mt-4">
+                                            <div class="form">
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label asp-for="Username">Username</label>
+                                                            <input asp-for="Username" disabled type="text" class="form-control mb-4" id="fullName">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label asp-for="Input.FirstName">First Name</label>
+                                                            <input asp-for="Input.FirstName" class="form-control" />
+                                                            <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label asp-for="Input.LastName">Last Name</label>
+                                                            <input asp-for="Input.LastName" class="form-control" />
+                                                            <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label asp-for="Input.PhoneNumber" class="form-label"></label>
+                                                            <input asp-for="Input.PhoneNumber" class="form-control" />
+                                                            <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                    <div id="about" class="section about">
+                        <div class="info">
+                            <h5 class="">About</h5>
+                            <div class="row">
+                                <div class="col-md-11 mx-auto">
+                                    <div class="form-group">
+                                        <label for="aboutBio">Bio</label>
+                                        <textarea class="form-control" id="aboutBio" placeholder="Tell something interesting about yourself" rows="5">I'm Creative Director and UI/UX Designer from Sydney, Australia, working in web development and print media. I enjoy turning complex problems into simple, beautiful and intuitive designs.
+
+My job is to build your website so that it is functional and user-friendly but at the same time attractive. </textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 text-left mb-5">
+                            <button type="submit" id="add-work-platforms" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
-            <div class="form-floating">
-                <input asp-for="Input.PhoneNumber" class="form-control" />
-                <label asp-for="Input.PhoneNumber" class="form-label"></label>
-                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
-            </div>
-            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
         </form>
     </div>
 </div>
+
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

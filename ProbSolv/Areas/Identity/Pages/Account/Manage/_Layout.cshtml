@@ -1,4 +1,16 @@
-﻿@{
+﻿@using ProbSolv.Services.Interfaces
+@using ProbSolv.Models.ViewModels
+
+@inject UserManager<PSUser> UserManager
+@inject IPSRolesService RoleService
+@inject IPSFileService FileService
+
+
+@* <link rel="stylesheet" type="text/css" href="/plugins/dropify/dropify.min.css">
+<link href="/assets/css/users/account-setting.css" rel="stylesheet" type="text/css" />
+ *@
+
+@{
     if (ViewData.TryGetValue("ParentLayout", out var parentLayout))
     {
         Layout = (string)parentLayout;
@@ -7,26 +19,28 @@
     {
         Layout = "/Areas/Identity/Pages/_Layout.cshtml";
     }
-}
 
-<h1>Manage your account</h1>
+
+    PSUser? user = await UserManager.GetUserAsync(User);
+    bool isSignedIn = user is not null ? true : false;
+}
+ 
+
 
 <div>
-    <hr />
-    <div class="row">
-        <div class="col-8">
-            <partial name="_ManageNav" />
-        </div>
-    </div>
    
     <div class="row">
 
-        <div class="col-8">
+        <div class="col">
+            <partial name="_ManageNav" />
             @RenderBody()
         </div>
     </div>
 </div>
 
 @section Scripts {
+    <!--  BEGIN CUSTOM SCRIPTS FILE  -->
+
+
     @RenderSection("Scripts", required: false)
 }

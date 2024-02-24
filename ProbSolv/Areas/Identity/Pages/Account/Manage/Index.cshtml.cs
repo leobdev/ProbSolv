@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ProbSolv.Models;
+using ProbSolv.Services.Interfaces;
 
 namespace ProbSolv.Areas.Identity.Pages.Account.Manage
 {
@@ -17,6 +18,7 @@ namespace ProbSolv.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<PSUser> _userManager;
         private readonly SignInManager<PSUser> _signInManager;
+        private readonly IPSFileService _fileService;
 
         public IndexModel(
             UserManager<PSUser> userManager,
@@ -59,18 +61,36 @@ namespace ProbSolv.Areas.Identity.Pages.Account.Manage
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+
+            [Display(Name = "First Name")]
+            public string FirstName { get; set; }
+
+            [Display(Name = "Last Name")]
+            public string LastName { get; set; }
+
+            [Display(Name = "Avatar")]
+            public IFormFile Avatar { get; set; }
+
+
         }
 
         private async Task LoadAsync(PSUser user)
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            var firstName = user.FirstName;
+            var lastName = user.LastName;
+            var avatar = user.AvatarFormFile;
 
             Username = userName;
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                FirstName = firstName,
+                LastName = lastName,
+                Avatar = avatar
+
             };
         }
 
@@ -101,15 +121,36 @@ namespace ProbSolv.Areas.Identity.Pages.Account.Manage
             }
 
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            if (Input.PhoneNumber != phoneNumber)
+            if (Input.PhoneNumber != phoneNumber || Input.FirstName != user.FirstName || Input.LastName != user.LastName || Input.Avatar != user.AvatarFormFile)
             {
+                user.FirstName = Input.FirstName;
+                user.LastName = Input.LastName;
+                var jpg = Input.Avatar;
+
+                MemoryStream memoryStream = new();
+
+                await jpg.CopyToAsync(memoryStream);
+
+                byte[] byteFile = memoryStream.ToArray();
+
+                memoryStream.Close();
+
+                memoryStream.Dispose();
+                //var image = await _fileService.ConvertFileToByteArrayAsync(jpg);
+                user.AvatarFileData = byteFile;
+
+                user.AvatarContentType = jpg.ContentType;
                 var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
+
+
                 if (!setPhoneResult.Succeeded)
                 {
                     StatusMessage = "Unexpected error when trying to set phone number.";
                     return RedirectToPage();
                 }
             }
+
+            
 
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
