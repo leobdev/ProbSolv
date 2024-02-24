@@ -12,17 +12,15 @@
 
 
 <div class="container-fluid">
-    <h2>Ticket Assigment</h2>
+
 
 
     <div class="row mb-3">
 
-
         <div class="card md-3 statbox widget box box-shadow col-xl-6 col-lg-6 col-sm-12 layout-spacing">
             <div class=" col widget-content widget-content-area">
 
-
-                <h6 class="control-label">Select Developers</h6>
+                <h5 class="control-label">Assign developer for</h5>
 
                 <h5>
 
@@ -80,11 +78,11 @@
 
     </div>
 
-    <div class="row">
+    <div class="row mb-3">
 
 
-        <div class="card statbox widget box box-shadow col-xl-6 col-lg-6 col-sm-12 layout-spacing">
-            <div class="row">
+        <div class="card md-3 statbox widget box box-shadow col-xl-6 col-lg-6 col-sm-12 layout-spacing">
+            <div class=" col widget-content widget-content-area">
 
                 <h5>Current Developer</h5>
             </div>
@@ -100,7 +98,7 @@
             <div class="row">
                 @if (dev.Projects is not null)
                 {
-                    <div class="col-3 offset-3">
+                    <div class=" col widget-content widget-content-area">
 
 
 
@@ -114,7 +112,7 @@
 
                         }
 
-                        
+
 
 
 
@@ -126,7 +124,7 @@
                             <h4>
                                 @dev.FullName
                             </h4>
-                           
+
                             <hr />
                             <p>@dev.Email</p>
 
@@ -138,7 +136,10 @@
                 }
                 else
                 {
-                    <h6>No developer has been assigned.</h6>
+                    <div class="col">
+                        <h6>No developer has been assigned.</h6>
+
+                    </div>
                 }
 
 
@@ -200,7 +201,6 @@
 
     </div>
     <br />
-    <a asp-action="AllTickets" asp-controller="Tickets" class="btn btn-outline-dark">Back to List</a>
 
 </div>
 
