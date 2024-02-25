@@ -21,14 +21,14 @@
                                             <div class="row">
                                                 <div class="col-sm-6">
                                                     <p>Are you sure you want to remove user?</p>
-                                                    <div class="avatar">
+                                                    <div class="avatar avatar-xl">
                                                         @if (Model.AvatarFileData != null)
                                                         {
-                                                            <img style="height:50px;max-width:55px;width: expression(this.width > 500 ? 500: true);" src="data:image/*;base64,@(Convert.ToBase64String(Model.AvatarFileData))" class="img-fluid rounded-circle" alt="avatar">
+                                                            <img style="height:100px;max-width:100px;width: expression(this.width > 500 ? 500: true);" src="data:image/*;base64,@(Convert.ToBase64String(Model.AvatarFileData))" class="img-fluid rounded-circle" alt="avatar">
                                                         }
                                                         else
                                                         {
-                                                            <span><img style="width:40px;height:40px" src="/img/avatardefault_92824.png" class="img-fluid rounded-circle" alt="avatar"></span>
+                                                            <span><img style="width:80px;height:80px" src="/img/avatardefault_92824.png" class="img-fluid rounded-circle" alt="avatar"></span>
 
                                                         }
                                                     </div>

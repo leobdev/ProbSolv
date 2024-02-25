@@ -1,105 +1,142 @@
-﻿@model IEnumerable<ProbSolv.Models.Project>
-@using ProbSolv.Models.Enums
+﻿@model MemberProfileViewModel
 @using Microsoft.AspNetCore.Identity
 @using ProbSolv.Services.Interfaces
+@using ProbSolv.Models.Enums
 
 @inject UserManager<PSUser> UserManager
 @inject IPSProjectService ProjectService
 @inject IPSBadgeService StatusService
 
+
+
 @{
-    ViewData["Title"] = "All Projects";
+    ViewData["Title"] = "My Tickets";
+
     PSUser psUser = await UserManager.GetUserAsync(User);
 
 }
 
-
-
-
 <div class="container-fluid">
-
-
 
     <div class="row">
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
 
             <div class="statbox widget box box-shadow">
                 <div class="widget-content widget-content-area">
-                    <h5>All Projects</h5>
+                    <h5>Member Profile</h5>
+                    <div class="row">
+
+
+                        <div class="col">
+                            @if (Model.Member.AvatarFileData != null)
+                            {
+                                <img style="height:100px;max-width:100px;width: expression(this.width > 500 ? 500: true);" src="data:image/*;base64,@(Convert.ToBase64String(Model.Member.AvatarFileData))" class="img-fluid rounded-circle" alt="avatar">
+                            }
+                            else
+                            {
+                                <span><img style="width:80px;height:80px" src="/img/avatardefault_92824.png" class="img-fluid rounded-circle" alt="avatar"></span>
+                            }
+                            <div class="flex flex-col">
+                                <h5>@Model.Member.FullName</h5>
+                                <p>@Model.Member.Email</p>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <h5> @Model.Member.FirstName's Projects</h5>
+                            @foreach (var project in Model.Projects)
+                            {
+                                <div class="flex flex-col">
+                                    <h5>@project.Name</h5>
+                                    <p>@project.Description</p>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+
+            <div class="statbox widget box box-shadow">
+                <div class="widget-content widget-content-area">
+                    <h5>@Model.Member.FirstName 's Tickets</h5>
+
                     <table id="style-3" class="table style-3  table-hover" style="width:100%">
                         <thead>
                             <tr>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Name)
+                                    Title
                                 </th>
 
                                 <th>
-                                    @Html.DisplayNameFor(model => model.StartDate)
+                                    Developer
+                                </th>
+
+                                <th class="text-center">
+                                    Status
+                                </th>
+                                <th class="text-center">
+                                    Priority
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.EndDate)
-                                </th>
-
-                                <th class="text-center">
-                                    Project Manager
-                                </th>
-
-                                <th class="text-center">
-                                    @Html.DisplayNameFor(model => model.ProjectPriority)
+                                    Date
                                 </th>
                                 <th class="text-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var item in Model)
+                            @foreach (var item in Model.Tickets)
                             {
                                 <tr>
                                     <td>
-                                        <h6>
-
-                                            @Html.DisplayFor(modelItem => item.Name)
-                                        </h6>
-                                    </td>
-
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.StartDate)
+                                        @Html.DisplayFor(modelItem => item.Title)
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.EndDate)
-                                    </td>
-
-                                    <td class="text-center">
-                                        @{
-                                            PSUser PM = await ProjectService.GetProjectManagerAsync(item.Id);
-                                        }
-
-                                        @if (PM?.AvatarFileData != null)
+                                        @if (item.OwnerUserId is null)
                                         {
-                                            <img style="width:60px;height:60px" class="img-fluid rounded-circle" src="data:image/*;base64,@(Convert.ToBase64String(PM.AvatarFileData))" alt="" />
+                                            <p>--SEEDED--</p>
                                         }
                                         else
                                         {
-                                            <span><img src="/img/avatardefault_92824.png" style="width:60px;height:60px" class="img-fluid rounded-circle" alt="avatar"></span>
-                                        }
-                                        <p>@PM?.FullName</p>
+                                            @Html.DisplayFor(modelItem => item.OwnerUser.FullName)
 
+                                        }
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.DeveloperUser.FullName)
                                     </td>
                                     <td class="text-center">
-                                        <span class="badge @StatusService.GetPriorityBadge(item.ProjectPriority?.Name ) ">
-                                            @Html.DisplayFor(modelItem => item.ProjectPriority.Name)
+                                        <span class="btn @StatusService.GetStatusBadge(item.TicketStatus.Name)">
+                                            @Html.DisplayFor(modelItem => item.TicketStatus.Name)
                                         </span>
                                     </td>
                                     <td class="text-center">
+                                        <span class="badge @StatusService.GetPriorityBadge(item.TicketPriority.Name ) ">
+                                            @Html.DisplayFor(modelItem => item.TicketPriority.Name)
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Updated)
+                                    </td>
+
+
+                                    <td class="text-center">
                                         <a asp-action="Details" asp-route-id="@item.Id" class="bs-tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="Details"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg></a>
 
-                                        @{
-                                            bool isProjectPM = (await ProjectService.GetProjectManagerAsync(item.Id))?.Id == psUser.Id;
-                                        }
-
-                                        @if (User.IsInRole(nameof(Roles.Admin)) || isProjectPM)
+                                        @if (User.IsInRole(nameof(Roles.Admin)) ||
+                                       item.DeveloperUserId == psUser.Id ||
+                                       item.OwnerUserId == psUser.Id)
                                         {
                                             <a asp-action="Edit" asp-route-id="@item.Id" class="bs-tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 p-1 br-6 mb-1"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg></a>
 
+
+                                        }
+
+                                        @if (User.IsInRole(nameof(Roles.Admin)) || await ProjectService.IsAssignedProjectManagerAsync(psUser.Id, item.ProjectId))
+                                        {
                                             @if (item.Archived)
                                             {
                                                 <a asp-action="Restore" asp-route-id="@item.Id" class="bs-tooltip" data-toggle="tooltip" data-placement="top" title="Restore"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-corner-up-left"><polyline points="9 14 4 9 9 4" /><path d="M20 20v-7a4 4 0 0 0-4-4H4" /></svg></a>
@@ -109,16 +146,16 @@
                                                 <a asp-action="Archive" asp-route-id="@item.Id" class="bs-tooltip" data-toggle="tooltip" data-placement="top" title="Archive"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-archive"><polyline points="21 8 21 21 3 21 3 8" /><rect x="1" y="3" width="22" height="5" /><line x1="10" y1="12" x2="14" y2="12" /></svg></a>
                                             }
                                         }
+
+
                                     </td>
                                 </tr>
                             }
                         </tbody>
                     </table>
                 </div>
-
             </div>
         </div>
-
     </div>
 </div>
 
@@ -138,7 +175,7 @@
             },
             "stripeClasses": [],
             "lengthMenu": [5, 10, 20, 50],
-            "pageLength": 5
+            "pageLength": 10
         });
 
     </script>

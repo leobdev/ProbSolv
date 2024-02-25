@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using ProbSolv.Extensions;
 using ProbSolv.Models;
 using ProbSolv.Models.Enums;
+using ProbSolv.Models.ViewModels;
 using ProbSolv.Services;
 using ProbSolv.Services.Interfaces;
 
@@ -17,13 +18,13 @@ namespace ProbSolv.Controllers
         private readonly UserManager<PSUser> _userManager;
         private readonly IPSProjectService _projectService;
         private readonly IPSTicketService _ticketService;
-        
 
-        public MembersController(ILogger<MembersController> logger, 
+
+        public MembersController(ILogger<MembersController> logger,
                                 IPSMemberService memberService,
-                                IPSCompanyInfoService companyService, 
-                                UserManager<PSUser> userManager, 
-                                IPSProjectService projectService, 
+                                IPSCompanyInfoService companyService,
+                                UserManager<PSUser> userManager,
+                                IPSProjectService projectService,
                                 IPSTicketService ticketService)
         {
             _logger = logger;
@@ -38,8 +39,34 @@ namespace ProbSolv.Controllers
             int companyId = User.Identity.GetCompanyId().Value;
 
             var members = await _companyService.GetAllMembersAsync(companyId);
-            
+
             return View(members);
+        }
+
+
+        public async Task<IActionResult> Details(string? id)
+        {
+            var companyId = User.Identity.GetCompanyId();
+
+            if (companyId is null || id is null) return NotFound();
+
+            PSUser? member = await _memberService.GetMemberByIdAsync(companyId.Value, id);
+
+            if (member is null) return NotFound();
+
+ 
+            var projects = await _projectService.GetUserProjectsAsync(member.Id);
+
+            var tickets = await _ticketService.GetTicketsByUserIdAsync(member.Id, companyId.Value);
+
+            MemberProfileViewModel memberProfile = new MemberProfileViewModel
+            {
+                Member = member,
+                Projects = projects,
+                Tickets = tickets
+            };
+
+            return View(memberProfile);
         }
 
 
