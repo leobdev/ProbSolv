@@ -43,7 +43,7 @@ namespace ProbSolv.Controllers
             return View(members);
         }
 
-
+        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Details(string? id)
         {
             var companyId = User.Identity.GetCompanyId();
